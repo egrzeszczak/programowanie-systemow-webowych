@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/public/styles/style.css" />
+        <title>Aplikacja</title>
+    </head>
+    <body>
+        <div class="main-container">
+            <h1>Aplikacja</h1>
+            <div class="navigation">
+                <a href="/">Głowna</a>
+                <% if (req.loggedIn) { %>
+                <a href="/ticket">Zgłoszenia</a>
+                <a href="/ticket/new">Nowe zgłoszenie</a>
+                <span><%= req.loggedIn.username %></span>
+                <a href="/login/logout">Wyloguj</a>
+                <% } else { %>
+                <a href="/login">Zaloguj</a>
+                <% } %>
+            </div>
+            <div class="main-content">

@@ -1,11 +1,27 @@
+// ENV
 require("dotenv").config();
 
+// Express
 const Express = require("express");
+
+// JWT
 const JWT = require("jsonwebtoken");
+
+// CookieParser
+const CookieParser = require("cookie-parser");
+
+// Auth DB
 const { Tedis } = require("tedis");
+
+// Init
 const Application = Express();
 
+// Setup
 Application.use(Express.json());
+Application.use(CookieParser());
+
+
+
 
 // Logowanie / przydzielenie tokena autoryzującego
 Application.post("/login", async (req, res) => {
@@ -18,11 +34,10 @@ Application.post("/login", async (req, res) => {
     // Weryfikacja czy taki użytkownik istnieje w systemie
     const UserCheck = JSON.parse(await DATABASE.get(User.username));
 
-	// Nie znaleziono takiego username
-	if(!UserCheck) {
-		res.sendStatus(404)
-	}
-    else if (
+    // Nie znaleziono takiego username
+    if (!UserCheck) {
+        res.sendStatus(404);
+    } else if (
         User.username == UserCheck.username &&
         User.password == UserCheck.password
     ) {
@@ -36,13 +51,50 @@ Application.post("/login", async (req, res) => {
             process.env.ACCESS_TOKEN_SECRET
         );
         // Zwróć token JWT
-        res.status(200).json({ AccessToken: AccessToken });
+        res.status(200).json({
+            AccessToken: AccessToken,
+            User: UserCheck.username,
+            Access: UserCheck.access,
+        });
     } else {
         // Źle podane hasło
         // Zwróć błąd 404
         res.sendStatus(404);
     }
 });
+
+
+
+
+
+
+
+// Weryfikacja tokenu
+Application.post("/verify", async (req, res) => {
+    
+    // Gotowy token już bez 'Bearer '
+    const Token = req.body.Token
+    
+    // Jeśli token pusty to znaczy że proszę sie zalogowac
+    if (Token == null) return res.sendStatus(401);
+
+    // JWT verify token
+    JWT.verify(Token, process.env.ACCESS_TOKEN_SECRET, (err, User) => {
+        if (err) {
+            console.log(err)
+            return res.status(403).send(err);
+        } else {
+            res.status(200).send(User);
+        }
+        // res.status(200).cookie('User', User.username).cookie('Access', User.access)
+    });
+});
+
+
+
+
+
+
 
 Application.post("/register", async (req, res) => {
     // Ułóż ładnie request
@@ -78,17 +130,7 @@ Application.post("/register", async (req, res) => {
     }
 });
 
-// function Verify(req, res, next) {
-//     const AuthenticationHeader = req.headers["authorization"];
-//     const Token = AuthenticationHeader && AuthenticationHeader.split(" ")[1];
-//     if (Token == null) return res.sendStatus(401);
 
-//     JWT.verify(Token, process.env.ACCESS_TOKEN_SECRET, (err, User) => {
-//         if (err) return res.sendStatus(403);
-//         req.User = User;
-//         next();
-//     });
-// }
 
 
 const DATABASE = new Tedis({ host: "localhost", port: 6379 });

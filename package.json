@@ -3,17 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "application.js",
-  "tailwind:css": "postcss public/styles/tailwind.css -o public/styles/style.css",
   "scripts": {
-    "dev": "concurrently --kill-others \"nodemon application.js\" \"nodemon authentication-server.js\""
+    "tailwind": "",
+    "dev": "concurrently --kill-others \"nodemon application.js\" \"nodemon authentication-server.js\" \"npx tailwindcss -i public/styles/tailwind.css -o public/styles/style.css --watch\""
   },
   "keywords": [],
   "author": "egrzeszczak",
   "license": "MIT",
   "dependencies": {
     "autoprefixer": "^10.4.2",
+    "axios": "^0.26.0",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.0",
+    "ejs": "^3.1.6",
     "express": "^4.17.3",
+    "isomorphic-fetch": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
     "postcss": "^8.4.8",
     "postcss-cli": "^9.1.0",

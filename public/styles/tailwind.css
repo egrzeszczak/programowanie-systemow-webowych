@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+a {
+    @apply text-emerald-600 hover:underline
+}
+
+input, textarea{
+    @apply border resize-none
+}
