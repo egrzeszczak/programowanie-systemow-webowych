@@ -71,26 +71,31 @@ Projekt jest warunkiem zaliczenia przedmiotu **Programowanie Systemów Webowych*
 #### Struktura HTML5
 
 - Strukutra HTML5 dzięki silnikowi wyświetlania `ejs`
+- Framework `TailwindCSS` do stylizacji HTML
 
 #### Formularz
 
 - Logowanie
 - Rejestracja
-- Zgłaszanie wniosków
+- Tworzenie wniosków
 - Zamieszczanie komentarza, uwag do prac
+- Zamieszczanie załączników
 
 #### Web storage 
 
-- Moduł autentyfikacji, logowanie, przechowywanie tokenu sesji
+- Moduł autentyfikacji (`JWT`): 
+  - logowanie
+  - przechowywanie tokenu sesji
 
 #### Drag & Drop 
 
-- Widok tablicy i kolejki zgłoszeń, drag & drop można wykorzystać do dispatchowania zgłoszeń pomiędzy specjalistami ds. wsparcia
-- Przekazywanie załączników
+- Widok tablicy i kolejki zgłoszeń, *drag & drop* można wykorzystać do dispatchowania zgłoszeń pomiędzy specjalistami ds. wsparcia (`Vue.js`)
+- Przekazywanie załączników (`Vue.js`)
 
 #### Rest API
 
-- Aplikacja wykorzystuje Rest API do komunikowania się z bazą danych
+- Aplikacja wykorzystuje Rest API do komunikacji z bazą danych (`MongoDB`)
+- Wykorzystanie Rest API do weryfikacji tokenów JWT (`Redis`)
 
 #### Workery
 
