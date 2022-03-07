@@ -45,7 +45,7 @@ Application.get("/", Authenticate, (req, res) => {
 
 
 
-// Run
+// Runtime
 const EXPOSE = 3000;
 Application.listen(EXPOSE, () => {
     console.log(
