@@ -3,14 +3,18 @@ const Router = Express.Router();
 const axios = require("axios");
 
 Router.get("/", (req, res) => {
-    res.render("login/index", {req: req});
+    res.render("login/index", { req: req });
+});
+
+Router.get("/register", (req, res) => {
+    res.render("register/index", { req: req });
 });
 
 Router.get("/logout", (req, res) => {
     res.clearCookie("Authorization")
         .clearCookie("User")
         .clearCookie("Access")
-        .redirect('/');
+        .redirect("/");
 });
 
 Router.post("/", async (req, res) => {
@@ -21,6 +25,14 @@ Router.post("/", async (req, res) => {
                 .cookie("User", response.data.User)
                 .cookie("Access", response.data.Access)
                 .redirect("/");
+        });
+});
+
+Router.post("/register", async (req, res) => {
+    await axios
+        .post("http://localhost:5000/register", req.body)
+        .then((response) => {
+            res.redirect('/')
         });
 });
 

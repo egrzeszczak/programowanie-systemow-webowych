@@ -1,12 +1,16 @@
 <form action="/ticket/new" method="post">
     <input type="text" name="title" id="title" placeholder="Tytuł zgłoszenia"></br>
-    <textarea name="description" id="description" cols="30" rows="10" placeholder="Opis zgłoszenia"></textarea></br>
+    <textarea name="description_md" id="description_md" cols="30" rows="10" placeholder="Opis zgłoszenia"></textarea></br>
     <select name="priority" id="priority" >
-        <option value="critical">Krytyczny</option>
-        <option value="high">Wysoki</option>
-        <option value="medium">Średni</option>
-        <option value="low">Niski</option>
-        <option value="none" selected>Bez priorytetu</option>
-    </select></br>
+        <% for( const [key, value] of Object.entries(definition.priority) ) { %>
+            <option value="<%= key %>"><%= value %></option>  
+        <% } %>
+    </select>
+    <select name="category" id="category" >
+        <% for( const [key, value] of Object.entries(definition.category) ) { %>
+            <option value="<%= key %>"><%= value %></option>  
+        <% } %>
+    </select>
+    </br>
     <input type="submit" value="Wyślij">
 </form>

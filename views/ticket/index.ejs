@@ -1,9 +1,32 @@
 <%- include('../../components/_header.ejs') %>
 
-<% tickets.forEach(ticket => { %>
-    <%= ticket.title %>
-    <%= ticket.description %>
-    <%= ticket.priority %></br>
-<% }) %>
+<table>
+    <thead>
+        <th>Tytuł</th>
+        <th>Opis</th>
+        <th>Priorytet</th>
+        <th>Utworzono</th>
+        <th>Utworzono przez</th>
+    </thead>
 
+    <tbody>
+        <% tickets.forEach(ticket => { %>
+            <tr>
+                <td>
+                    <a href="/ticket/id?id=<%= ticket.id %>"><%= ticket.title %></a>
+                </td>
+                <td>
+                    <%= ticket.priority %></br>
+                </td>
+                <td>
+                    <%= ticket.createdOn.toLocaleString() %></br>
+                </td>
+                <td>
+                    <%= ticket.issuedBy %></br>
+                </td>
+                    
+            </tr>
+        <% }) %>
+    </tbody>
+</table>
 <%- include('../../components/_footer.ejs') %>

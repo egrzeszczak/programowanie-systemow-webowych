@@ -27,25 +27,27 @@ Application.use(CookieParser());
 Application.post("/login", async (req, res) => {
     // Ułóż ładnie request
     const User = {
-        username: req.body.username,
+        email: req.body.email,
         password: req.body.password,
     };
 
+    console.log(User)
+
     // Weryfikacja czy taki użytkownik istnieje w systemie
-    const UserCheck = JSON.parse(await DATABASE.get(User.username));
+    const UserCheck = JSON.parse(await DATABASE.get(User.email));
 
     // Nie znaleziono takiego username
     if (!UserCheck) {
         res.sendStatus(404);
     } else if (
-        User.username == UserCheck.username &&
+        User.email == UserCheck.email &&
         User.password == UserCheck.password
     ) {
         // Jeśli istnieje
         // Wygeneruj token JWT - pobierz przywilej i nazwę uzytkownika
         const AccessToken = JWT.sign(
             {
-                username: UserCheck.username,
+                email: UserCheck.email,
                 access: UserCheck.access,
             },
             process.env.ACCESS_TOKEN_SECRET
@@ -53,7 +55,7 @@ Application.post("/login", async (req, res) => {
         // Zwróć token JWT
         res.status(200).json({
             AccessToken: AccessToken,
-            User: UserCheck.username,
+            User: UserCheck.email,
             Access: UserCheck.access,
         });
     } else {
@@ -99,12 +101,12 @@ Application.post("/verify", async (req, res) => {
 Application.post("/register", async (req, res) => {
     // Ułóż ładnie request
     const UserCandidate = {
-        username: req.body.username,
+        email: req.body.email,
         password: req.body.password,
     };
 
     // Sprawdź czy czasem taki użytkownik nie istnieje
-    const UserCheck = JSON.parse(await DATABASE.get(UserCandidate.username));
+    const UserCheck = JSON.parse(await DATABASE.get(UserCandidate.email));
     if (UserCheck) {
         // Jeśli istnieje już taki użytkownik
         // Zwróć 409 Conflict
@@ -114,9 +116,9 @@ Application.post("/register", async (req, res) => {
         try {
             // Utwórz użytkownika
             await DATABASE.set(
-                UserCandidate.username,
+                UserCandidate.email,
                 JSON.stringify({
-                    username: UserCandidate.username,
+                    email: UserCandidate.email,
                     password: UserCandidate.password,
                     access: 0,
                 })

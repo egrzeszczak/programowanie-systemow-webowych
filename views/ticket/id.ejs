@@ -1,0 +1,56 @@
+<%- include('../../components/_header.ejs') %>
+
+<div id="ticket">
+    <select v-model="ticket.status">
+        <option
+            v-for="[key, value] in Object.entries(definition.status)"
+            :key="key"
+            :value="key"
+        >
+            {{ value }}
+        </option>
+    </select>
+    <select v-model="ticket.category" :disabled="user.access < 2">
+        <option
+            v-for="[key, value] in Object.entries(definition.category)"
+            :key="key"
+            :value="key"
+        >
+            {{ value }}
+        </option>
+    </select>
+    <select v-model="ticket.priority" :disabled="user.access < 2">
+        <option
+            v-for="[key, value] in Object.entries(definition.priority)"
+            :key="key"
+            :value="key"
+        >
+            {{ value }}
+        </option>
+    </select>
+    <h1>{{ ticket.title }}</h1>
+    <div v-html="ticket.description"></div>
+    {{ ticket }}
+</div>
+
+<script>
+
+    var vm = new Vue({
+        el: "#ticket",
+        data() {
+            return {
+                definition: <%- JSON.stringify(definition) %>,
+                ticket: <%- JSON.stringify(ticket) %>,
+                user: <%- JSON.stringify(req.loggedIn) %>,
+            }
+        },
+        methods: {
+            async update() {
+
+            }
+        },
+    })
+
+</script>
+
+<%- include('../../components/_footer.ejs') %>
