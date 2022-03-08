@@ -11,7 +11,6 @@ module.exports = async function Authenticate(req, res, next) {
                     req.cookies.Authorization.split(" ")[1],
             })
             .then((response) => {
-                console.log(response);
                 req.loggedIn = response.data;
                 next();
             })
@@ -19,7 +18,5 @@ module.exports = async function Authenticate(req, res, next) {
                 console.log(error);
                 res.redirect("/login");
             });
-
-        next();
     }
 }

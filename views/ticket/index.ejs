@@ -1,3 +1,9 @@
 <%- include('../../components/_header.ejs') %>
-Tikety
+
+<% tickets.forEach(ticket => { %>
+    <%= ticket.title %>
+    <%= ticket.description %>
+    <%= ticket.priority %></br>
+<% }) %>
+
 <%- include('../../components/_footer.ejs') %>
