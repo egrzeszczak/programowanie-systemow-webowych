@@ -23,6 +23,10 @@ TicketSchema.pre('validate', function(next) {
         this.description = Marked.parse(this.description_md)
         this.description = this.description.replace(/>\n/g, ">")
         this.description_ex = this.description.replace(/<\/?[^>]+(>|$)/g, " ")
+        if(this.description_ex.length > 80) 
+        {
+            this.description_ex = this.description_ex.substring(0, 80) + "..."
+        }
         this.description = DomPurify.sanitize(
             this.description
         );

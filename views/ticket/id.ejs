@@ -1,36 +1,195 @@
 <%- include('../../components/_header.ejs') %>
-
 <div id="ticket">
-    <select v-model="ticket.status">
-        <option
-            v-for="[key, value] in Object.entries(definition.status)"
-            :key="key"
-            :value="key"
-        >
-            {{ value }}
-        </option>
-    </select>
-    <select v-model="ticket.category" :disabled="user.access < 2">
-        <option
-            v-for="[key, value] in Object.entries(definition.category)"
-            :key="key"
-            :value="key"
-        >
-            {{ value }}
-        </option>
-    </select>
-    <select v-model="ticket.priority" :disabled="user.access < 2">
-        <option
-            v-for="[key, value] in Object.entries(definition.priority)"
-            :key="key"
-            :value="key"
-        >
-            {{ value }}
-        </option>
-    </select>
-    <h1>{{ ticket.title }}</h1>
-    <div v-html="ticket.description"></div>
-    {{ ticket }}
+    <div
+        class="rounded-bl-md px-3 mb-2 transition-colors"
+        :class="{
+            'border-l-8 border-teal-200': ticket.status == 'new',  
+            'border-l-8 border-amber-400 bg-amber-100': ticket.status == 'in-progress',  
+            'border-l-8 border-slate-400 bg-slate-100 text-slate-400': ticket.status == 'done',  
+        }"
+    >
+        <div class="flex flex-row items-end">
+            <div class="text-xl font-mono mr-3">{{ ticket.id }}</div>
+            <div class="text-3xl font-medium">{{ ticket.title }}</div>
+        </div>
+    </div>
+
+    <div class="grid grid-flow-col grid-cols-12 gap-4">
+        <div class="col-span-4">
+            <div class="">
+                <div class="flex flex-row items-center justify-between p-1">
+                    <div class="text-xs text-slate-600">Utworzył</div>
+                    <div class="text-sm font-medium">
+                        {{ ticket.issuedBy }}
+                    </div>
+                </div>
+                <div class="flex flex-row items-center justify-between p-1">
+                    <div class="text-xs text-slate-600">Utworzono</div>
+                    <div class="text-sm font-medium">
+                        {{ createdOnReadable }}
+                    </div>
+                </div>
+                <div class="flex flex-row items-center justify-between p-1">
+                    <div class="text-xs text-slate-600">Zaktualizowano</div>
+                    <div class="text-sm font-medium">
+                        {{ createdOnReadable }}
+                    </div>
+                </div>
+                <div class="flex flex-row items-center justify-between p-1">
+                    <div class="text-xs text-slate-600">Status</div>
+                    <div class="">
+                        <select
+                            v-model="ticket.status"
+                            :selected="ticket.status"
+                            class="w-48 bg-white border border-slate-200 rounded-sm text-sm"
+                            @change="updateStatus"
+                        >
+                            <option
+                                v-for="[key, value] in Object.entries(definition.status)"
+                                :key="key"
+                                :value="key"
+                            >
+                                {{ value }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-row items-center justify-between p-1">
+                    <div class="text-xs text-slate-600">Kategoria</div>
+                    <div class="">
+                        <select
+                            v-model="ticket.category"
+                            :selected="ticket.category"
+                            class="w-48 bg-white border border-slate-200 rounded-sm text-sm"
+                            @change="updateCategory"
+                        >
+                            <option
+                                v-for="[key, value] in Object.entries(definition.category)"
+                                :key="key"
+                                :value="key"
+                            >
+                                {{ value }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-row items-center justify-between p-1">
+                    <div class="text-xs text-slate-600">Priorytet</div>
+                    <div class="flex items-center">
+                        <svg
+                            v-if="ticket.priority == 'none'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            class="w-5 h-5 mr-1 fill-current text-teal-900"
+                        >
+                            <path
+                                d="M9.609,19.2l-.6,3.974a1,1,0,0,1-.98.8.99.99,0,0,1-.2-.02,1,1,0,0,1-.781-1.179l.6-3.974a1,1,0,0,1,1.961.4ZM10,2.5A2.5,2.5,0,1,1,12.5,5,2.5,2.5,0,0,1,10,2.5ZM20,7a1,1,0,0,0-1,1v2H16.618L15.447,7.658A3,3,0,0,0,12.764,6H10.418A1.5,1.5,0,0,0,8.942,7.231l-1.049,5.76A2.988,2.988,0,0,0,9.2,16.08L13,18.543V23a1,1,0,0,0,2,0V18a1,1,0,0,0-.456-.839l-1.206-.783,1.13-6.206.637,1.275A1,1,0,0,0,16,12h3V23a1,1,0,0,0,2,0V8A1,1,0,0,0,20,7ZM6.4,15.893A2.7,2.7,0,0,1,5.67,16,2.765,2.765,0,0,1,3,12.971,7.68,7.68,0,0,1,7.065,6.676L5.91,12.61A4.974,4.974,0,0,0,6.4,15.893Z"
+                            />
+                        </svg>
+                        <svg
+                            v-if="ticket.priority == 'low'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            class="w-5 h-5 mr-1 fill-current text-teal-500"
+                        >
+                            <g
+                                id="_01_align_center"
+                                data-name="01 align center"
+                            >
+                                <path
+                                    d="M12,24A12,12,0,1,1,24,12,12.013,12.013,0,0,1,12,24ZM12,2A10,10,0,1,0,22,12,10.011,10.011,0,0,0,12,2Z"
+                                />
+                                <rect x="11" y="5" width="2" height="10" />
+                                <rect x="11" y="17" width="2" height="2" />
+                            </g>
+                        </svg>
+                        <svg
+                            v-if="ticket.priority == 'medium'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            class="w-5 h-5 mr-1 fill-current text-amber-500"
+                        >
+                            <g
+                                id="_01_align_center"
+                                data-name="01 align center"
+                            >
+                                <path
+                                    d="M12,24A12,12,0,1,1,24,12,12.013,12.013,0,0,1,12,24ZM12,2A10,10,0,1,0,22,12,10.011,10.011,0,0,0,12,2Z"
+                                />
+                                <rect x="11" y="5" width="2" height="10" />
+                                <rect x="11" y="17" width="2" height="2" />
+                            </g>
+                        </svg>
+                        <svg
+                            v-if="ticket.priority == 'high'"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            class="w-5 h-5 mr-1 fill-current text-red-500"
+                        >
+                            <path
+                                d="M24,12A12,12,0,1,1,12,0,12.013,12.013,0,0,1,24,12ZM13,5H11V15h2Zm0,12H11v2h2Z"
+                            />
+                        </svg>
+                        <div
+                            v-if="ticket.priority == 'critical'"
+                            class="flex flex-row align-middle items-center font-bold text-red-700"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="w-5 h-5 mr-1 fill-current"
+                            >
+                                <path
+                                    d="M24,12A12,12,0,1,1,12,0,12.013,12.013,0,0,1,24,12ZM13,5H11V15h2Zm0,12H11v2h2Z"
+                                />
+                            </svg>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="w-5 h-5 mr-1 fill-current"
+                            >
+                                <path
+                                    d="M23,12a1,1,0,0,1-1,1H19.13a3.016,3.016,0,0,1-2.569-1.452L15.193,9.277,13.706,12.9a1,1,0,0,1-1.851-.758L13.555,8H11.616L9.552,13.032a1,1,0,0,0,.39,1.225l4.592,2.9A1,1,0,0,1,15,18v5a1,1,0,0,1-2,0V18.551l-4.126-2.6A3,3,0,0,1,7.7,12.273L9.454,8H7.236a.994.994,0,0,0-.894.552L4.895,11.447a1,1,0,0,1-1.79-.894l1.448-2.9A2.984,2.984,0,0,1,7.236,6h6.623A3.017,3.017,0,0,1,16.43,7.453l1.844,3.063A1.006,1.006,0,0,0,19.13,11H22A1,1,0,0,1,23,12ZM7.875,16.814a1,1,0,0,0-1.3.557A.994.994,0,0,1,5.646,18H3a1,1,0,0,0,0,2H5.646a2.987,2.987,0,0,0,2.786-1.886A1,1,0,0,0,7.875,16.814ZM15,5a2.5,2.5,0,1,0-2.5-2.5A2.5,2.5,0,0,0,15,5Z"
+                                />
+                            </svg>
+                        </div>
+                        <select
+                            v-model="ticket.priority"
+                            :selected="ticket.priority"
+                            class="w-48 bg-white border border-slate-200 rounded-sm text-sm"
+                            @change="updatePriority"
+                        >
+                            <option
+                                v-for="[key, value] in Object.entries(definition.priority)"
+                                :key="key"
+                                :value="key"
+                            >
+                                {{ value }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-row items-center justify-between p-1">
+                    <div class="text-xs text-slate-600">Przypisane</div>
+                    <div class="">
+                        <input
+                            class="w-48 bg-white border border-slate-200 rounded-sm text-xs p-1"
+                            type="email"
+                            name="assignedTo"
+                            id="assignedTo"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-8">
+            <div
+                v-html="ticket.description"
+                class="max-h-52 overflow-x-auto px-4 py-2 border bg-slate-50 border-slate-100 rounded-sm markdown-class"
+            ></div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -44,13 +203,45 @@
                 user: <%- JSON.stringify(req.loggedIn) %>,
             }
         },
-        methods: {
-            async update() {
-
+        computed: {
+            createdOnReadable() {
+                let temp = new Date(this.ticket.createdOn)
+                return temp.toLocaleString()
             }
         },
+        methods: {
+            async updateStatus() {
+                await axios.post("/ticket/update/status", {
+                    id: this.ticket.id,
+                    status: this.ticket.status
+                }).then((response) => {
+                    // SUCCESS
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
+            async updateCategory() {
+                await axios.post("/ticket/update/category", {
+                    id: this.ticket.id,
+                    category: this.ticket.category
+                }).then((response) => {
+                    // SUCCESS
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
+            async updatePriority() {
+                await axios.post("/ticket/update/priority", {
+                    id: this.ticket.id,
+                    priority: this.ticket.priority
+                }).then((response) => {
+                    // SUCCESS
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
+        },
     })
-
 </script>
 
 <%- include('../../components/_footer.ejs') %>

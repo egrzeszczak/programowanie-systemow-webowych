@@ -1,3 +1,57 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.markdown-class {
+	@apply break-all;
+	white-space: pre-line !important;
+}
+.markdown-class h1 {
+	@apply text-2xl my-3;
+}
+.markdown-class h2 {
+	@apply text-xl my-3;
+}
+.markdown-class h3 {
+	@apply text-lg my-3;
+}
+.markdown-class h4 {
+	@apply text-sm my-3;
+}
+.markdown-class h5 {
+	@apply font-bold my-3;
+}
+.markdown-class {
+	@apply text-xs;
+}
+.markdown-class table{
+	@apply w-full my-2;
+}
+.markdown-class table th{
+	@apply p-1 font-bold border-b border-slate-200;
+}
+.markdown-class table td{
+	@apply p-1 border-b border-slate-100;
+}
+.markdown-class ul {
+	@apply pl-6 m-0 my-1 list-disc;
+}
+.markdown-class ol {
+	@apply pl-6 m-0 my-1 list-decimal;
+}
+.markdown-class blockquote {
+	@apply border-l-4 p-2 my-1 border-slate-200 bg-slate-100;
+}
+.markdown-class code {
+	@apply border border-slate-200 bg-white px-1 py-0.5 rounded-sm;
+}
+.markdown-class pre {
+	@apply flex break-normal whitespace-nowrap;
+}
+.markdown-class pre code {
+	@apply p-3 m-2 rounded-sm break-all flex-1 bg-white border-slate-200 border;
+	white-space: pre-wrap !important;
+}
+.markdown-class a {
+	@apply text-emerald-700 underline hover:text-teal-500;
+}

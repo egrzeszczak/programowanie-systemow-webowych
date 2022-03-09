@@ -2,144 +2,118 @@
 <div class="mb-4">Zgłoszenia</div>
 <% tickets.forEach(ticket => { %>
 
-<div
-    class="border-b-2 border-slate-100 rounded-lg grid grid-flow-col gap-2 grid-cols-12 my-4"
->
-    <div class="col-span-1 flex flex-col">
-        <div class="flex-1 flex flex-col justify-center items-center bg-white">
-            <div class="font-mono text-lg pt-0 font-bold text-center hover:underline">
-                <a href="/ticket/id?id=<%= ticket.id %>"><%= ticket.id %></a>
-            </div>
-            <div class="text-xs text-center">
-                <%= ticket.createdOn.toLocaleString() %>
-            </div>
-        </div>
-        <div
-            class="<% if (ticket.status == 'new') { %> bg-green-200 <% } %> <% if (ticket.status == 'in-progress') { %> bg-amber-400 <% } %> <% if (ticket.status == 'done') { %> bg-white text-green-600 <% } %> py-1 flex justify-center items-center text-xs font-bold rounded-bl-md"
-        >
-            <%= definition.status[ticket.status] %>
-        </div>
+<div class="grid grid-cols-12 border-b shadow-sm mb-1 hover:bg-teal-50 rounded-md">
+    <div class="col-span-2 pt-0.5 rounded-tl-md font-sans text-sm font-medium flex items-center justify-center"><a class="hover:underline" href="/ticket/id?id=<%= ticket.id%>"><%= ticket.id %></a>   </div>
+    <div class="col-span-10 pt-0.5 text-slate-700 font-medium text-lg px-2"><a class="hover:underline" href="/ticket/id?id=<%= ticket.id%>"><%= ticket.title %></a></div>
+    <div class="col-span-2 text-xs font-normal flex items-center justify-center text-center">
+        <%= ticket.createdOn.toLocaleString() %>
     </div>
-    <div class="col-span-9 flex flex-col justify-center p-1">
-        <a
-            href="/ticket/id?id=<%= ticket.id %>"
-            class="text-slate-700 font-bold text-lg mb-1 hover:underline"
-            ><%= ticket.title %></a
-        >
-        <a
-            href="/ticket/id?id=<%= ticket.id %>"
-            class="text-slate-600 text-sm mb-2 hover:underline"
-        >
-            <%= ticket.description_ex %>
-        </a>
-        <div
-            class="text-xs mb-1 flex-row items-center grid grid-flow-col grid-cols-12"
-        >
-            <div class="col-span-1">
-                <% if (ticket.priority == 'none') { %>
-                <div
-                    class="flex flex-row align-middle items-center font-bold text-teal-900"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        class="w-4 h-4 mr-1 fill-current"
-                    >
-                        <path
-                            d="M9.609,19.2l-.6,3.974a1,1,0,0,1-.98.8.99.99,0,0,1-.2-.02,1,1,0,0,1-.781-1.179l.6-3.974a1,1,0,0,1,1.961.4ZM10,2.5A2.5,2.5,0,1,1,12.5,5,2.5,2.5,0,0,1,10,2.5ZM20,7a1,1,0,0,0-1,1v2H16.618L15.447,7.658A3,3,0,0,0,12.764,6H10.418A1.5,1.5,0,0,0,8.942,7.231l-1.049,5.76A2.988,2.988,0,0,0,9.2,16.08L13,18.543V23a1,1,0,0,0,2,0V18a1,1,0,0,0-.456-.839l-1.206-.783,1.13-6.206.637,1.275A1,1,0,0,0,16,12h3V23a1,1,0,0,0,2,0V8A1,1,0,0,0,20,7ZM6.4,15.893A2.7,2.7,0,0,1,5.67,16,2.765,2.765,0,0,1,3,12.971,7.68,7.68,0,0,1,7.065,6.676L5.91,12.61A4.974,4.974,0,0,0,6.4,15.893Z"
-                        />
-                    </svg>
-                    <p><%= definition.priority[ticket.priority] %></p>
-                </div>
-                <% } %> <% if (ticket.priority == 'low') { %>
-                <div
-                    class="flex flex-row align-middle items-center font-bold text-teal-500"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        class="w-4 h-4 mr-1 fill-current"
-                    >
-                        <g id="_01_align_center" data-name="01 align center">
-                            <path
-                                d="M12,24A12,12,0,1,1,24,12,12.013,12.013,0,0,1,12,24ZM12,2A10,10,0,1,0,22,12,10.011,10.011,0,0,0,12,2Z"
-                            />
-                            <rect x="11" y="5" width="2" height="10" />
-                            <rect x="11" y="17" width="2" height="2" />
-                        </g>
-                    </svg>
-                    <p><%= definition.priority[ticket.priority] %></p>
-                </div>
-                <% } %> <% if (ticket.priority == 'medium') { %>
-                <div
-                    class="flex flex-row align-middle items-center font-bold text-amber-500"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        class="w-4 h-4 mr-1 fill-current"
-                    >
-                        <g id="_01_align_center" data-name="01 align center">
-                            <path
-                                d="M12,24A12,12,0,1,1,24,12,12.013,12.013,0,0,1,12,24ZM12,2A10,10,0,1,0,22,12,10.011,10.011,0,0,0,12,2Z"
-                            />
-                            <rect x="11" y="5" width="2" height="10" />
-                            <rect x="11" y="17" width="2" height="2" />
-                        </g>
-                    </svg>
-                    <p><%= definition.priority[ticket.priority] %></p>
-                </div>
-                <% } %> <% if (ticket.priority == 'high') { %>
-                <div
-                    class="flex flex-row align-middle items-center font-bold text-red-500"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        class="w-4 h-4 mr-1 fill-current"
-                    >
-                        <path
-                            d="M24,12A12,12,0,1,1,12,0,12.013,12.013,0,0,1,24,12ZM13,5H11V15h2Zm0,12H11v2h2Z"
-                        />
-                    </svg>
-                    <p><%= definition.priority[ticket.priority] %></p>
-                </div>
-                <% } %> <% if (ticket.priority == 'critical') { %>
-                <div
-                    class="flex flex-row align-middle items-center font-bold text-red-700"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        class="w-4 h-4 mr-1 fill-current"
-                    >
-                        <path
-                            d="M24,12A12,12,0,1,1,12,0,12.013,12.013,0,0,1,24,12ZM13,5H11V15h2Zm0,12H11v2h2Z"
-                        />
-                    </svg>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        class="w-4 h-4 mr-1 fill-current"
-                    >
-                        <path
-                            d="M23,12a1,1,0,0,1-1,1H19.13a3.016,3.016,0,0,1-2.569-1.452L15.193,9.277,13.706,12.9a1,1,0,0,1-1.851-.758L13.555,8H11.616L9.552,13.032a1,1,0,0,0,.39,1.225l4.592,2.9A1,1,0,0,1,15,18v5a1,1,0,0,1-2,0V18.551l-4.126-2.6A3,3,0,0,1,7.7,12.273L9.454,8H7.236a.994.994,0,0,0-.894.552L4.895,11.447a1,1,0,0,1-1.79-.894l1.448-2.9A2.984,2.984,0,0,1,7.236,6h6.623A3.017,3.017,0,0,1,16.43,7.453l1.844,3.063A1.006,1.006,0,0,0,19.13,11H22A1,1,0,0,1,23,12ZM7.875,16.814a1,1,0,0,0-1.3.557A.994.994,0,0,1,5.646,18H3a1,1,0,0,0,0,2H5.646a2.987,2.987,0,0,0,2.786-1.886A1,1,0,0,0,7.875,16.814ZM15,5a2.5,2.5,0,1,0-2.5-2.5A2.5,2.5,0,0,0,15,5Z"
-                        />
-                    </svg>
-                    <p><%= definition.priority[ticket.priority] %></p>
-                </div>
-                <% } %>
-            </div>
-            <div class="col-span-7">
-                <p><%= definition.category[ticket.category] %></p>
-            </div>
-            <div class="text-xs text-slate-600 col-span-4 text-right">
-                <%= ticket.issuedBy %> &rArr;
-            </div>
-        </div>
+    <div class="col-span-10 flex items-center text-xs text-slate-600 px-2"><a class="hover:underline" href="/ticket/id?id=<%= ticket.id%>"><%= ticket.description_ex %></a></div>
+    <div class="col-span-2 py-1 rounded-bl-md flex justify-center items-center text-xs font-bold <% if(ticket.status == 'new') { %> bg-teal-200 <% } %> <% if(ticket.status == 'in-progress') { %> bg-amber-400 <% } %> <% if(ticket.status == 'done') { %> bg-white text-teal-500 <% } %>">
+        <%= definition.status[ticket.status] %> 
     </div>
-    <div class="text-xs text-slate-600 text-left col-span-2 flex flex-col justify-end items-top p-2">
-        ernest.grzeszczak@servicefront.com
+    <div class="col-span-10 py-1  grid grid-cols-12 grid-flow-col px-2">
+        <div class="col-span-2 flex items-center">
+            <% if (ticket.priority == 'none') { %>
+            <div
+                class="flex flex-row align-middle items-center font-bold text-teal-900"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="w-3 h-3 mr-1 fill-current"
+                >
+                    <path
+                        d="M9.609,19.2l-.6,3.974a1,1,0,0,1-.98.8.99.99,0,0,1-.2-.02,1,1,0,0,1-.781-1.179l.6-3.974a1,1,0,0,1,1.961.4ZM10,2.5A2.5,2.5,0,1,1,12.5,5,2.5,2.5,0,0,1,10,2.5ZM20,7a1,1,0,0,0-1,1v2H16.618L15.447,7.658A3,3,0,0,0,12.764,6H10.418A1.5,1.5,0,0,0,8.942,7.231l-1.049,5.76A2.988,2.988,0,0,0,9.2,16.08L13,18.543V23a1,1,0,0,0,2,0V18a1,1,0,0,0-.456-.839l-1.206-.783,1.13-6.206.637,1.275A1,1,0,0,0,16,12h3V23a1,1,0,0,0,2,0V8A1,1,0,0,0,20,7ZM6.4,15.893A2.7,2.7,0,0,1,5.67,16,2.765,2.765,0,0,1,3,12.971,7.68,7.68,0,0,1,7.065,6.676L5.91,12.61A4.974,4.974,0,0,0,6.4,15.893Z"
+                    />
+                </svg>
+                <p class="text-xs"><%= definition.priority[ticket.priority] %></p>
+            </div>
+            <% } %> <% if (ticket.priority == 'low') { %>
+            <div
+                class="flex flex-row align-middle items-center font-bold text-teal-500"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="w-3 h-3 mr-1 fill-current"
+                >
+                    <g id="_01_align_center" data-name="01 align center">
+                        <path
+                            d="M12,24A12,12,0,1,1,24,12,12.013,12.013,0,0,1,12,24ZM12,2A10,10,0,1,0,22,12,10.011,10.011,0,0,0,12,2Z"
+                        />
+                        <rect x="11" y="5" width="2" height="10" />
+                        <rect x="11" y="17" width="2" height="2" />
+                    </g>
+                </svg>
+                <p class="text-xs"><%= definition.priority[ticket.priority] %></p>
+            </div>
+            <% } %> <% if (ticket.priority == 'medium') { %>
+            <div
+                class="flex flex-row align-middle items-center font-bold text-amber-500"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="w-3 h-3 mr-1 fill-current"
+                >
+                    <g id="_01_align_center" data-name="01 align center">
+                        <path
+                            d="M12,24A12,12,0,1,1,24,12,12.013,12.013,0,0,1,12,24ZM12,2A10,10,0,1,0,22,12,10.011,10.011,0,0,0,12,2Z"
+                        />
+                        <rect x="11" y="5" width="2" height="10" />
+                        <rect x="11" y="17" width="2" height="2" />
+                    </g>
+                </svg>
+                <p class="text-xs"><%= definition.priority[ticket.priority] %></p>
+            </div>
+            <% } %> <% if (ticket.priority == 'high') { %>
+            <div
+                class="flex flex-row align-middle items-center font-bold text-red-500"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="w-3 h-3 mr-1 fill-current"
+                >
+                    <path
+                        d="M24,12A12,12,0,1,1,12,0,12.013,12.013,0,0,1,24,12ZM13,5H11V15h2Zm0,12H11v2h2Z"
+                    />
+                </svg>
+                <p class="text-xs"><%= definition.priority[ticket.priority] %></p>
+            </div>
+            <% } %> <% if (ticket.priority == 'critical') { %>
+            <div
+                class="flex flex-row align-middle items-center font-bold text-red-700"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="w-3 h-3 mr-1 fill-current"
+                >
+                    <path
+                        d="M24,12A12,12,0,1,1,12,0,12.013,12.013,0,0,1,24,12ZM13,5H11V15h2Zm0,12H11v2h2Z"
+                    />
+                </svg>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="w-3 h-3 mr-1 fill-current"
+                >
+                    <path
+                        d="M23,12a1,1,0,0,1-1,1H19.13a3.016,3.016,0,0,1-2.569-1.452L15.193,9.277,13.706,12.9a1,1,0,0,1-1.851-.758L13.555,8H11.616L9.552,13.032a1,1,0,0,0,.39,1.225l4.592,2.9A1,1,0,0,1,15,18v5a1,1,0,0,1-2,0V18.551l-4.126-2.6A3,3,0,0,1,7.7,12.273L9.454,8H7.236a.994.994,0,0,0-.894.552L4.895,11.447a1,1,0,0,1-1.79-.894l1.448-2.9A2.984,2.984,0,0,1,7.236,6h6.623A3.017,3.017,0,0,1,16.43,7.453l1.844,3.063A1.006,1.006,0,0,0,19.13,11H22A1,1,0,0,1,23,12ZM7.875,16.814a1,1,0,0,0-1.3.557A.994.994,0,0,1,5.646,18H3a1,1,0,0,0,0,2H5.646a2.987,2.987,0,0,0,2.786-1.886A1,1,0,0,0,7.875,16.814ZM15,5a2.5,2.5,0,1,0-2.5-2.5A2.5,2.5,0,0,0,15,5Z"
+                    />
+                </svg>
+                <p class="text-xs"><%= definition.priority[ticket.priority] %></p>
+            </div>
+            <% } %>
+        </div>
+        <div class="col-span-4 text-xs flex items-center">
+            <%= definition.category[ticket.category] %>
+        </div>
+        <div class="col-span-6 text-xs text-slate-600 flex flex-row items-center justify-end">
+            <%= ticket.issuedBy %> &rArr; ernest.grzeszczak@servicefront.com
+        </div>
     </div>
 </div>
 
