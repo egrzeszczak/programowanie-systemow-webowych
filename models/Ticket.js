@@ -10,6 +10,7 @@ const TicketSchema = new Mongoose.Schema({
     title: String,
     description_md: String,
     description: String,
+    description_ex: String,
     priority: String,
     category: String,
     status: String,
@@ -21,6 +22,7 @@ TicketSchema.pre('validate', function(next) {
     if(this.description_md) {
         this.description = Marked.parse(this.description_md)
         this.description = this.description.replace(/>\n/g, ">")
+        this.description_ex = this.description.replace(/<\/?[^>]+(>|$)/g, " ")
         this.description = DomPurify.sanitize(
             this.description
         );

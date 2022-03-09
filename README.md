@@ -11,7 +11,7 @@
     <img src="s2.png" alt="Logo">
   </a> -->
   <a href="https://github.com/egrzeszczak/programowanie-systemow-webowych">
-    <img src="logo-l-t.png" alt="Logo">
+    <img src="logo-l.png" alt="Logo" width="256">
   </a> 
 
   <h2 align="center">Programowanie Systemów Webowych</h3>
