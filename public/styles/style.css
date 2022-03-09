@@ -467,18 +467,3 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
 }
-
-a {
-  --tw-text-opacity: 1;
-  color: rgb(5 150 105 / var(--tw-text-opacity));
-}
-
-a:hover {
-  -webkit-text-decoration-line: underline;
-          text-decoration-line: underline;
-}
-
-input, textarea {
-  resize: none;
-  border-width: 1px;
-}

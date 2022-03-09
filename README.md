@@ -7,12 +7,12 @@
 
 <br />
 <p align="center">
-  <!-- <a href="https://github.com/egrzeszczak/programowanie-systemow-webowych">
+  <!-- <!-- <a href="https://github.com/egrzeszczak/programowanie-systemow-webowych">
     <img src="s2.png" alt="Logo">
-  </a>
-  <a href="https://github.com/egrzeszczak/programowanie-systemow-webowych">
-    <img src="s1.png" alt="Logo">
   </a> -->
+  <a href="https://github.com/egrzeszczak/programowanie-systemow-webowych">
+    <img src="logo-l-t.png" alt="Logo">
+  </a> 
 
   <h2 align="center">Programowanie Systemów Webowych</h3>
   <h3 align="center">System zarządzania usługami IT</h3>
