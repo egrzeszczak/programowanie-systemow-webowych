@@ -15,7 +15,9 @@ const TicketSchema = new Mongoose.Schema({
     category: String,
     status: String,
     createdOn: Date,
+    updatedOn: Date,
     issuedBy: String,
+    content: [],
 })
 
 TicketSchema.pre('validate', function(next) {

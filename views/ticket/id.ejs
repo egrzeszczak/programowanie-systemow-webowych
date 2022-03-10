@@ -16,6 +16,7 @@
 
     <div class="grid grid-flow-col grid-cols-12 gap-4">
         <div class="col-span-4">
+            <p class="text-xs text-teal-600 font-bold mb-1">Szczegóły</p>
             <div class="">
                 <div class="flex flex-row items-center justify-between p-1">
                     <div class="text-xs text-slate-600">Utworzył</div>
@@ -32,7 +33,7 @@
                 <div class="flex flex-row items-center justify-between p-1">
                     <div class="text-xs text-slate-600">Zaktualizowano</div>
                     <div class="text-sm font-medium">
-                        {{ createdOnReadable }}
+                        {{ updatedOnReadable }}
                     </div>
                 </div>
                 <div class="flex flex-row items-center justify-between p-1">
@@ -184,10 +185,229 @@
         </div>
 
         <div class="col-span-8">
+            <p class="text-xs text-teal-600 font-bold mb-1">Opis</p>
             <div
                 v-html="ticket.description"
                 class="max-h-52 overflow-x-auto px-4 py-2 border bg-slate-50 border-slate-100 rounded-sm markdown-class"
             ></div>
+            <p class="text-xs text-teal-600 font-bold my-1">Historia</p>
+            <div
+                class="flex bg-white border border-slate-200 rounded-sm text-xs p-1"
+            >
+                <textarea
+                    name="message"
+                    id="message"
+                    v-model="message"
+                    class="resize-none flex-1 h-16 p-2 mr-1 border border-slate-100 outline-none"
+                ></textarea>
+                <button
+                    class="pr-2 pl-1 transition-colors text-teal-500 hover:bg-teal-400 hover:text-teal-100 rounded-sm flex flex-col items-center justify-center"
+                    @click="sendMessage"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        class="w-5 h-5 ml-1 fill-current"
+                    >
+                        <path
+                            d="M23.119.882a2.966,2.966,0,0,0-2.8-.8l-16,3.37a4.995,4.995,0,0,0-2.853,8.481L3.184,13.65a1,1,0,0,1,.293.708v3.168a2.965,2.965,0,0,0,.3,1.285l-.008.007.026.026A3,3,0,0,0,5.157,20.2l.026.026.007-.008a2.965,2.965,0,0,0,1.285.3H9.643a1,1,0,0,1,.707.292l1.717,1.717A4.963,4.963,0,0,0,15.587,24a5.049,5.049,0,0,0,1.605-.264,4.933,4.933,0,0,0,3.344-3.986L23.911,3.715A2.975,2.975,0,0,0,23.119.882ZM4.6,12.238,2.881,10.521a2.94,2.94,0,0,1-.722-3.074,2.978,2.978,0,0,1,2.5-2.026L20.5,2.086,5.475,17.113V14.358A2.978,2.978,0,0,0,4.6,12.238Zm13.971,7.17a3,3,0,0,1-5.089,1.712L11.762,19.4a2.978,2.978,0,0,0-2.119-.878H6.888L21.915,3.5Z"
+                        />
+                    </svg>
+                </button>
+            </div>
+            <div v-for="(event, index) in reverseContent" :key="index">
+                <div
+                    class="border-slate-200 border-l flex flex-col h-5 mx-6 w-0"
+                ></div>
+                <!-- CREATED -->
+                <div
+                    v-if="event.type == 'created'"
+                    class="bg-white rounded-sm text-xs mx-2 p-2"
+                >
+                    <div class="flex flex-row">
+                        <div
+                            class="flex flex-col justify-center items-center mr-2"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="w-4 h-4 fill-current text-slate-700"
+                            >
+                                <path
+                                    d="m18 9.064a3.049 3.049 0 0 0 -.9-2.164 3.139 3.139 0 0 0 -4.334 0l-11.866 11.869a3.064 3.064 0 0 0 4.33 4.331l11.87-11.869a3.047 3.047 0 0 0 .9-2.167zm-14.184 12.624a1.087 1.087 0 0 1 -1.5 0 1.062 1.062 0 0 1 0-1.5l7.769-7.77 1.505 1.505zm11.872-11.872-2.688 2.689-1.5-1.505 2.689-2.688a1.063 1.063 0 1 1 1.5 1.5zm-10.825-6.961 1.55-.442.442-1.55a1.191 1.191 0 0 1 2.29 0l.442 1.55 1.55.442a1.191 1.191 0 0 1 0 2.29l-1.55.442-.442 1.55a1.191 1.191 0 0 1 -2.29 0l-.442-1.55-1.55-.442a1.191 1.191 0 0 1 0-2.29zm18.274 14.29-1.55.442-.442 1.55a1.191 1.191 0 0 1 -2.29 0l-.442-1.55-1.55-.442a1.191 1.191 0 0 1 0-2.29l1.55-.442.442-1.55a1.191 1.191 0 0 1 2.29 0l.442 1.55 1.55.442a1.191 1.191 0 0 1 0 2.29zm-5.382-14.645 1.356-.387.389-1.358a1.042 1.042 0 0 1 2 0l.387 1.356 1.356.387a1.042 1.042 0 0 1 0 2l-1.356.387-.387 1.359a1.042 1.042 0 0 1 -2 0l-.387-1.355-1.358-.389a1.042 1.042 0 0 1 0-2z"
+                                />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <div class="font-bold text-slate-700">
+                                    {{ event.owner }}
+                                </div>
+                                <div class="ml-1 font-light">
+                                    {{ dateReadable(event.date) }}
+                                </div>
+                            </div>
+                            Utworzono zgłoszenie "{{ ticket.title }}"
+                        </div>
+                    </div>
+                </div>
+                <!-- CATEGORY -->
+                <div
+                    v-if="event.type == 'category'"
+                    class="bg-white rounded-sm text-xs mx-2 p-2"
+                >
+                    <div class="flex flex-row">
+                        <div
+                            class="flex flex-col justify-center items-center mr-2"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="w-4 h-4 fill-current text-slate-700"
+                            >
+                                <path
+                                    d="M22.2,2.163a4.992,4.992,0,0,0-4.1-1.081l-3.822.694A4,4,0,0,0,12,3.065,4,4,0,0,0,9.716,1.776L5.9,1.082A5,5,0,0,0,0,6V16.793a5,5,0,0,0,4.105,4.919l6.286,1.143a9,9,0,0,0,3.218,0L19.9,21.712A5,5,0,0,0,24,16.793V6A4.983,4.983,0,0,0,22.2,2.163ZM11,20.928c-.084-.012-.168-.026-.252-.041L4.463,19.745A3,3,0,0,1,2,16.793V6A3,3,0,0,1,5,3a3.081,3.081,0,0,1,.54.049l3.82.7A2,2,0,0,1,11,5.712Zm11-4.135a3,3,0,0,1-2.463,2.952l-6.285,1.142c-.084.015-.168.029-.252.041V5.712a2,2,0,0,1,1.642-1.968l3.821-.7A3,3,0,0,1,22,6Z"
+                                />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <div class="font-bold text-slate-700">
+                                    {{ event.owner }}
+                                </div>
+                                <div class="ml-1 font-light">
+                                    {{ dateReadable(event.date) }}
+                                </div>
+                            </div>
+                            Zmieniono kategorię zgłoszenia na
+                            {{ definition.category[event.change] }}
+                        </div>
+                    </div>
+                </div>
+                <!-- STATUS -->
+                <div
+                    v-if="event.type == 'status'"
+                    class="bg-white rounded-sm text-xs mx-2 p-2"
+                >
+                    <div class="flex flex-row">
+                        <div
+                            class="flex flex-col justify-center items-center mr-2"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="w-4 h-4 fill-current text-slate-700"
+                                v-if="event.change == 'done'"
+                            >
+                                <path
+                                    d="M19,0H5A5.006,5.006,0,0,0,0,5V19a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V5A5.006,5.006,0,0,0,19,0Zm3,19a3,3,0,0,1-3,3H5a3,3,0,0,1-3-3V5A3,3,0,0,1,5,2H19a3,3,0,0,1,3,3Z"
+                                />
+                                <path
+                                    d="M9.333,15.919,5.414,12A1,1,0,0,0,4,12H4a1,1,0,0,0,0,1.414l3.919,3.919a2,2,0,0,0,2.829,0L20,8.081a1,1,0,0,0,0-1.414h0a1,1,0,0,0-1.414,0Z"
+                                />
+                            </svg>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="w-4 h-4 fill-current text-slate-700"
+                                v-else
+                            >
+                                <path
+                                    d="m19 1h-14a5.006 5.006 0 0 0 -5 5v8a5.006 5.006 0 0 0 5 5h6v2h-4a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2h-4v-2h6a5.006 5.006 0 0 0 5-5v-8a5.006 5.006 0 0 0 -5-5zm3 13a3 3 0 0 1 -3 3h-14a3 3 0 0 1 -3-3v-8a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3zm-2-4a1 1 0 0 1 -1 1h-2.965l-1.7 2.555a1 1 0 0 1 -.835.445c-.021 0-.042 0-.062 0a1 1 0 0 1 -.833-.551l-2.229-4.461-1.044 1.567a1 1 0 0 1 -.832.445h-3.5a1 1 0 0 1 0-2h2.965l1.7-2.555a.987.987 0 0 1 .897-.445 1 1 0 0 1 .833.551l2.229 4.459 1.044-1.567a1 1 0 0 1 .832-.443h3.5a1 1 0 0 1 1 1z"
+                                />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <div class="font-bold text-slate-700">
+                                    {{ event.owner }}
+                                </div>
+                                <div class="ml-1 font-light">
+                                    {{ dateReadable(event.date) }}
+                                </div>
+                            </div>
+                            Zmieniono status zgłoszenia na
+                            {{ definition.status[event.change] }}
+                        </div>
+                    </div>
+                </div>
+                <!-- PRIORITY -->
+                <div
+                    v-if="event.type == 'priority'"
+                    class="bg-white rounded-sm text-xs mx-2 p-2"
+                >
+                    <div class="flex flex-row">
+                        <div
+                            class="flex flex-col justify-center items-center mr-2"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="w-4 h-4 fill-current text-slate-700"
+                            >
+                                <g
+                                    id="_01_align_center"
+                                    data-name="01 align center"
+                                >
+                                    <path
+                                        d="M12,24A12,12,0,1,1,24,12,12.013,12.013,0,0,1,12,24ZM12,2A10,10,0,1,0,22,12,10.011,10.011,0,0,0,12,2Z"
+                                    />
+                                    <rect x="11" y="5" width="2" height="10" />
+                                    <rect x="11" y="17" width="2" height="2" />
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <div class="font-bold text-slate-700">
+                                    {{ event.owner }}
+                                </div>
+                                <div class="ml-1 font-light">
+                                    {{ dateReadable(event.date) }}
+                                </div>
+                            </div>
+                            Zmieniono priorytet zgłoszenia na
+                            {{ definition.priority[event.change] }}
+                        </div>
+                    </div>
+                </div>
+                <!-- MESSAGE -->
+                <div
+                    v-if="event.type == 'message'"
+                    class="bg-white border rounded-sm text-xs mx-2 p-2"
+                    :class="{
+                        'border-slate-200': event.owner != user.email,
+                        'border-teal-500': event.owner == user.email,
+                    }"
+                >
+                    <div class="flex flex-row">
+                        <div
+                            class="flex flex-col justify-start items-center mr-2"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="w-4 h-4 fill-current text-slate-700"
+                            >
+                                <path
+                                    d="M19,1H5A5.006,5.006,0,0,0,0,6V18a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V6A5.006,5.006,0,0,0,19,1ZM5,3H19a3,3,0,0,1,2.78,1.887l-7.658,7.659a3.007,3.007,0,0,1-4.244,0L2.22,4.887A3,3,0,0,1,5,3ZM19,21H5a3,3,0,0,1-3-3V7.5L8.464,13.96a5.007,5.007,0,0,0,7.072,0L22,7.5V18A3,3,0,0,1,19,21Z"
+                                />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <div class="font-bold text-slate-700">
+                                    {{ event.owner }}
+                                </div>
+                                <div class="ml-1 font-light">
+                                    {{ dateReadable(event.date) }}
+                                </div>
+                            </div>
+                            {{ event.message }}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -201,21 +421,55 @@
                 definition: <%- JSON.stringify(definition) %>,
                 ticket: <%- JSON.stringify(ticket) %>,
                 user: <%- JSON.stringify(req.loggedIn) %>,
+                message: '',
             }
         },
         computed: {
             createdOnReadable() {
                 let temp = new Date(this.ticket.createdOn)
                 return temp.toLocaleString()
+            },
+            updatedOnReadable() {
+                let temp = new Date(this.ticket.updatedOn)
+                return temp.toLocaleString()
+            },
+            reverseContent() {
+                // return this.ticket.content
+                return this.ticket.content.reverse()
             }
         },
         methods: {
+            dateReadable(date) {
+                let temp = new Date(date)
+                return temp.toLocaleString()
+            },
+            async update() {
+                this.ticket = await axios.post("/ticket/info", {
+                    id: this.ticket.id,
+                }).then((response) => {
+                    return response.data
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
+            async sendMessage() {
+                await axios.post("/ticket/message", {
+                    id: this.ticket.id,
+                    message: this.message
+                }).then(async (response) => {
+                    this.message = '';
+                    await this.update()
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
             async updateStatus() {
                 await axios.post("/ticket/update/status", {
                     id: this.ticket.id,
                     status: this.ticket.status
-                }).then((response) => {
+                }).then(async (response) => {
                     // SUCCESS
+                    await this.update()
                 }).catch((error) => {
                     console.log(error)
                 })
@@ -224,8 +478,9 @@
                 await axios.post("/ticket/update/category", {
                     id: this.ticket.id,
                     category: this.ticket.category
-                }).then((response) => {
+                }).then(async (response) => {
                     // SUCCESS
+                    await this.update()
                 }).catch((error) => {
                     console.log(error)
                 })
@@ -234,8 +489,9 @@
                 await axios.post("/ticket/update/priority", {
                     id: this.ticket.id,
                     priority: this.ticket.priority
-                }).then((response) => {
+                }).then(async (response) => {
                     // SUCCESS
+                    await this.update()
                 }).catch((error) => {
                     console.log(error)
                 })

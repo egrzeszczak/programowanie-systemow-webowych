@@ -53,39 +53,114 @@ Router.get("/new", Authenticate, (req, res) => {
 });
 
 // API
-Router.post("/update/status", async (req, res) => {
+Router.post("/info", Authenticate, async (req, res) => {
+    let ticket = await Ticket.findOne({ id: req.body.id })
+        .then((ticket) => {
+            res.status(200).send(ticket) 
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+});
+
+
+Router.post("/message", Authenticate, async (req, res) => {
     //  { id: req.body.id, status: req.body.status }
     console.log(req.body);
     try {
         let ticketToChange = await Ticket.findOneAndUpdate(
             { id: req.body.id },
-            { status: req.body.status }
+            {
+                $set: {
+                    updatedOn: new Date(),
+                },
+                $push: {
+                    content: {
+                        type: "message",
+                        date: new Date(),
+                        owner: req.loggedIn.email,
+                        message: req.body.message,
+                    },
+                },
+            }
         );
         res.status(200).send("OK");
     } catch (error) {
         res.status(404).send(error);
     }
 });
-Router.post("/update/priority", async (req, res) => {
+Router.post("/update/status", Authenticate, async (req, res) => {
     //  { id: req.body.id, status: req.body.status }
     console.log(req.body);
     try {
         let ticketToChange = await Ticket.findOneAndUpdate(
             { id: req.body.id },
-            { priority: req.body.priority }
+            {
+                $set: {
+                    status: req.body.status,
+                    updatedOn: new Date(),
+                },
+                $push: {
+                    content: {
+                        type: "status",
+                        date: new Date(),
+                        owner: req.loggedIn.email,
+                        change: req.body.status,
+                    },
+                },
+            }
         );
         res.status(200).send("OK");
     } catch (error) {
         res.status(404).send(error);
     }
 });
-Router.post("/update/category", async (req, res) => {
+Router.post("/update/priority", Authenticate, async (req, res) => {
     //  { id: req.body.id, status: req.body.status }
     console.log(req.body);
     try {
         let ticketToChange = await Ticket.findOneAndUpdate(
             { id: req.body.id },
-            { category: req.body.category }
+            {
+                $set: {
+                    priority: req.body.priority,
+                    updatedOn: new Date(),
+                },
+                $push: {
+                    content: {
+                        type: "priority",
+                        date: new Date(),
+                        owner: req.loggedIn.email,
+                        change: req.body.priority,
+                    },
+                },
+            }
+        );
+        res.status(200).send("OK");
+    } catch (error) {
+        res.status(404).send(error);
+    }
+});
+Router.post("/update/category", Authenticate, async (req, res) => {
+    //  { id: req.body.id, status: req.body.status }
+    console.log(req.body);
+    try {
+        let ticketToChange = await Ticket.findOneAndUpdate(
+            { id: req.body.id },
+            {
+                $set: {
+                    category: req.body.category,
+                    updatedOn: new Date(),
+                },
+                $push: {
+                    content: {
+                        type: "category",
+                        date: new Date(),
+                        owner: req.loggedIn.email,
+                        change: req.body.category,
+                    },
+                },
+            }
         );
         res.status(200).send("OK");
     } catch (error) {
@@ -108,7 +183,15 @@ Router.post("/new", Authenticate, async (req, res) => {
             category: req.body.category,
             status: "new",
             createdOn: new Date(),
+            updatedOn: new Date(),
             issuedBy: req.loggedIn.email,
+            content: [
+                {
+                    type: "created",
+                    date: new Date(),
+                    owner: req.loggedIn.email,
+                },
+            ],
         });
 
         await NewTicket.save();
