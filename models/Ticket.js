@@ -18,6 +18,7 @@ const TicketSchema = new Mongoose.Schema({
     updatedOn: Date,
     issuedBy: String,
     content: [],
+    involved: [String], // to sort out in the next commit
 })
 
 TicketSchema.pre('validate', function(next) {

@@ -3,4 +3,5 @@ package-lock.json
 .env
 *.rest
 /config/database.js
+/config/mailer.js
 /public/icons/*
