@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const axios = require('axios')
 
 module.exports = async function Authenticate(req, res, next) {
@@ -5,7 +7,7 @@ module.exports = async function Authenticate(req, res, next) {
         res.redirect("/login");
     } else {
         await axios
-            .post("http://localhost:5000/verify", {
+            .post(`http://${process.env.HOST_IP}:5000/verify`, {
                 Token:
                     req.cookies.Authorization &&
                     req.cookies.Authorization.split(" ")[1],

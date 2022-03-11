@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const Express = require("express");
 const Router = Express.Router();
 const axios = require("axios");
@@ -19,7 +21,7 @@ Router.get("/logout", (req, res) => {
 
 Router.post("/", async (req, res) => {
     await axios
-        .post("http://localhost:5000/login", req.body)
+        .post(`http://${process.env.HOST_IP}:5000/login`, req.body)
         .then((response) => {
             res.cookie("Authorization", "Bearer " + response.data.AccessToken)
                 .cookie("User", response.data.User)
@@ -30,7 +32,7 @@ Router.post("/", async (req, res) => {
 
 Router.post("/register", async (req, res) => {
     await axios
-        .post("http://localhost:5000/register", req.body)
+        .post(`http://${process.env.HOST_IP}:5000/register`, req.body)
         .then((response) => {
             res.redirect('/')
         });

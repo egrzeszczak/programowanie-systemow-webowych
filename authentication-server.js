@@ -24,7 +24,8 @@ Application.use(CookieParser());
 Application.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    // res.setHeader('Access-Control-Allow-Origin', `http://${process.env.HOST_IP}:3000`);
+    res.setHeader('Access-Control-Allow-Origin', `*`);
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');

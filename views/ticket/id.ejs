@@ -200,6 +200,33 @@
                     </div>
                 </div>
             </div>
+            <!-- INVOLVED -->
+            <p class="text-xs text-teal-600 font-normal mb-1 mt-2">Osoby</p>
+            <div class="border border-slate-100 shadow-sm rounded-sm p-2">
+                <div
+                    v-for="(email, index) in ticket.involved"
+                    :key="index"
+                    class="flex flex-row items-center justify-between p-2"
+                >
+                    <div class="text-xs text-slate-600">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            class="w-5 h-5 mr-1 fill-current text-teal-900"
+                        >
+                            <path
+                                d="M12,12A6,6,0,1,0,6,6,6.006,6.006,0,0,0,12,12ZM12,2A4,4,0,1,1,8,6,4,4,0,0,1,12,2Z"
+                            />
+                            <path
+                                d="M12,14a9.01,9.01,0,0,0-9,9,1,1,0,0,0,2,0,7,7,0,0,1,14,0,1,1,0,0,0,2,0A9.01,9.01,0,0,0,12,14Z"
+                            />
+                        </svg>
+                    </div>
+                    <div class="text-xs font-medium">
+                        {{ email }}
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-span-8">
@@ -311,7 +338,8 @@
                 <!-- STATUS -->
                 <div
                     v-if="event.type == 'status'"
-                    class="bg-white rounded-sm text-xs mx-2 p-2"
+                    class="bg-white rounded-sm text-xs py-2 px-4"
+                    :class="{'bg-teal-200 border border-teal-300 shadow-sm': event.change == 'done'}"
                 >
                     <div class="flex flex-row">
                         <div
@@ -423,7 +451,6 @@
                                     {{ dateReadable(event.date) }}
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -524,6 +551,9 @@
                 // return this.ticket.content
                 return this.ticket.content.reverse()
             }
+        },
+        created() {
+            this.timer = setInterval(this.update, 5000);
         },
         methods: {
             dateReadable(date) {

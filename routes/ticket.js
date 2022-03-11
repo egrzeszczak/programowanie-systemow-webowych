@@ -84,15 +84,22 @@ Router.post("/info", Authenticate, async (req, res) => {
         });
 });
 
+//  Wysyłanie wiadomości / zamieszczanie komentarza w zgłoszeniu
 Router.post("/message", Authenticate, async (req, res) => {
-    //  { id: req.body.id, status: req.body.status }
-    console.log(req.body);
+    /*  
+        Tutaj przychodzi
+        { 
+            id: req.body.id, 
+            status: req.body.status 
+        }
+    */
     try {
         // Message markdown support
         let message_parsed = Marked.parse(req.body.message);
         message_parsed = message_parsed.replace(/>\n/g, ">");
         message_parsed = DomPurify.sanitize(message_parsed);
 
+        // Push the message to ticket
         let ticket = await Ticket.findOneAndUpdate(
             { id: req.body.id },
             {
@@ -108,25 +115,39 @@ Router.post("/message", Authenticate, async (req, res) => {
                         message_md: req.body.message,
                     },
                 },
+                $addToSet: {
+                    involved: req.loggedIn.email,
+                },
             }
         );
 
-        let notification = await transporter.sendMail({
-            from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address
-            to: `${ticket.issuedBy}`, // list of receivers
-            subject: `Dodano komentarz do zgłoszenia '${ticket.id}'`, // Subject line
-            text: "Hello world?", // plain text body
-            html: `
-                Dodano komentarz do zgłoszenia ${ticket.title}.</br>
-                ---</br>
-                ${req.loggedIn.email}:</br>
-                ${message_parsed}
-                ---</br>
-                <a href="http://localhost:3000/ticket/id?id=${ticket.id}">Link do zgłoszenia</a>
-            `,
+        // Send notifications to each user involved excluding the user who has sent the message
+        let senderExcluded = ticket.involved.filter(email => email != req.loggedIn.email)
+        console.log(senderExcluded)
+        senderExcluded.forEach(async (to) => {
+            await messageAddedNotification(
+                req.loggedIn.email,
+                to,
+                message_parsed,
+                ticket
+            );
         });
-        console.log("Message sent: %s", notification.messageId);
 
+        // Add notification info to ticket
+        await Ticket.findOneAndUpdate(
+            { id: req.body.id },
+            {
+                $push: {
+                    content: {
+                        type: "mail",
+                        date: new Date(),
+                        owner: senderExcluded.join(', '),
+                    },
+                },
+            }
+        );
+
+        // OK
         res.status(200).send("OK");
     } catch (error) {
         res.status(404).send("error ziomeczku :/");
@@ -153,6 +174,12 @@ Router.post("/update/status", Authenticate, async (req, res) => {
                 },
             }
         );
+          
+        
+        if(req.body.status == 'done') {
+            await ticketClosedNotification(ticketToChange)
+        }
+
         res.status(200).send("OK");
     } catch (error) {
         res.status(404).send(error);
@@ -228,6 +255,7 @@ Router.post("/new", Authenticate, async (req, res) => {
             createdOn: new Date(),
             updatedOn: new Date(),
             issuedBy: req.loggedIn.email,
+            involved: [req.loggedIn.email],
             content: [
                 {
                     type: "created",
@@ -244,23 +272,59 @@ Router.post("/new", Authenticate, async (req, res) => {
 
         await NewTicket.save();
 
-        let notification = await transporter.sendMail({
-            from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address
-            to: `${req.loggedIn.email} <${req.loggedIn.email}>`, // list of receivers
-            subject: `Zgłoszenie '${NewTicket.id}' zostało utworzone!`, // Subject line
-            text: "Hello world?", // plain text body
-            html: `
-                Utworzono nowe zgłoszenie ${NewTicket.id} o tytule ${NewTicket.title}.
-                ${NewTicket.description}
-                <a href="http://localhost:3000/ticket/id?id=${NewTicket.id}">Link do zgłoszenia</a>
-            `,
-        });
-        console.log("Message sent: %s", notification.messageId);
+        await ticketCreatedNotification(req.loggedIn.email, NewTicket)
 
         res.redirect(`/ticket/id?id=${uniqueid}`);
     } catch (error) {
         res.sendStatus(409);
     }
 });
+
+// MAILER TEMPLATES
+
+async function messageAddedNotification(from, to, message_parsed, ticket) {
+    let notification = await transporter.sendMail({
+        from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address
+        to: to, // list of receivers
+        subject: `Dodano komentarz do zgłoszenia '${ticket.id}'`, // Subject line
+        text: "Hello world?", // plain text body
+        html: `
+            Dodano komentarz do zgłoszenia ${ticket.title}.</br>
+            ---</br>
+            ${from}:</br>
+            ${message_parsed}
+            ---</br>
+            <a href="http://${process.env.HOST_IP}:3000/ticket/id?id=${ticket.id}">Link do zgłoszenia</a>
+        `,
+    });
+    console.log("Message sent: %s", notification.messageId);
+}
+async function ticketCreatedNotification(to, ticket) {
+    let notification = await transporter.sendMail({
+        from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address
+        to: to, // list of receivers
+        subject: `Zgłoszenie '${ticket.id}' zostało utworzone`, // Subject line
+        text: "Hello world?", // plain text body
+        html: `
+            Utworzono nowe zgłoszenie ${ticket.id} o tytule ${ticket.title}.
+            ${ticket.description}
+            <a href="http://${process.env.HOST_IP}:3000/ticket/id?id=${ticket.id}">Link do zgłoszenia</a>
+        `,
+    });
+    console.log("Message sent: %s", notification.messageId);
+}
+async function ticketClosedNotification(ticket) {
+    let notification = await transporter.sendMail({
+        from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address
+        to: ticket.issuedBy, // list of receivers
+        subject: `Zgłoszenie '${ticket.id}' zostało zrealizowane`, // Subject line
+        text: "Hello world?", // plain text body
+        html: `
+            Zgłoszenie ${ticket.id} o tytule ${ticket.title} zostało zrealizowane.
+            <a href="http://${process.env.HOST_IP}:3000/ticket/id?id=${ticket.id}">Link do zgłoszenia</a>
+        `,
+    });
+    console.log("Message sent: %s", notification.messageId);
+}
 
 module.exports = Router;
