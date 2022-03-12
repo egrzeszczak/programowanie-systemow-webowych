@@ -536,8 +536,8 @@
                     v-if="event.type == 'message'"
                     class="bg-white border rounded-sm text-xs p-4 shadow-sm"
                     :class="{
-                        'border-slate-200': event.owner != user.email,
-                        'border-slate-300 bg-slate-50': event.owner == user.email,
+                        'border-slate-500': event.owner != user.email,
+                        'border-slate-300': event.owner == user.email,
                     }"
                 >
                     <div class="flex flex-row">

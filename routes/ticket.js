@@ -270,6 +270,9 @@ Router.post("/update/assign", Authenticate, async (req, res) => {
                         change: req.body.assignedTo,
                     },
                 },
+                $addToSet: {
+                    involved: req.body.assignedTo,
+                },
             }
         );
 
