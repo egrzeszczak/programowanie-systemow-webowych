@@ -1,27 +1,24 @@
-require("dotenv").config();
+
+// Router
 const Express = require("express");
 const Router = Express.Router();
+// Cookies
 const CookieParser = require("cookie-parser");
+// Auth middleware
 const Authenticate = require("../middleware/authenticate");
+// Ticket object for Mongoose
 const Ticket = require("../models/Ticket");
-const nodemailer = require("nodemailer");
+
+// Ticket definition
 const definition = require("../config/definition");
+// Markdown imports for messages
 const Marked = require("marked");
 const { JSDOM } = require("jsdom");
 const DomPurifyModule = require("dompurify");
-
 const DomPurify = DomPurifyModule(new JSDOM().window);
 
-const transporter = nodemailer.createTransport({
-    host: process.env.MAIL_HOST,
-    port: process.env.MAIL_PORT,
-    secure: false, // true for 465, false for other ports
-    requireTLS: true,
-    auth: {
-        user: process.env.MAIL_USER, // generated ethereal user
-        pass: process.env.MAIL_PASS, // generated ethereal password
-    },
-});
+// Mailer plugin
+const mailer = require('../plugins/nodemailer')
 
 Router.use(CookieParser());
 
@@ -68,6 +65,8 @@ Router.get("/closed", Authenticate, async (req, res) => {
 Router.get("/new", Authenticate, (req, res) => {
     res.render("ticket/new", { req: req, definition: definition });
 });
+
+
 
 // API
 Router.post("/info", Authenticate, async (req, res) => {
@@ -123,7 +122,7 @@ Router.post("/message", Authenticate, async (req, res) => {
         );
         if (senderExcluded.length > 0) {
             senderExcluded.forEach(async (to) => {
-                await messageAddedNotification(
+                await mailer.messageAdded(
                     req.loggedIn.email,
                     to,
                     message_parsed,
@@ -174,7 +173,7 @@ Router.post("/update/status", Authenticate, async (req, res) => {
         );
 
         if (req.body.status == "done") {
-            await ticketClosedNotification(ticketToChange);
+            await mailer.ticketClosed(ticketToChange);
         }
 
         res.status(200).send("OK");
@@ -269,59 +268,12 @@ Router.post("/new", Authenticate, async (req, res) => {
 
         await NewTicket.save();
 
-        await ticketCreatedNotification(req.loggedIn.email, NewTicket);
+        await mailer.ticketCreated(req.loggedIn.email, NewTicket);
 
         res.redirect(`/ticket/id?id=${uniqueid}`);
     } catch (error) {
         res.sendStatus(409);
     }
 });
-
-// MAILER TEMPLATES
-
-async function messageAddedNotification(from, to, message_parsed, ticket) {
-    let notification = await transporter.sendMail({
-        from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address
-        to: to, // list of receivers
-        subject: `Dodano komentarz do zgłoszenia '${ticket.id}'`, // Subject line
-        text: "Hello world?", // plain text body
-        html: `
-            Dodano komentarz do zgłoszenia ${ticket.title}.</br>
-            ---</br>
-            ${from}:</br>
-            ${message_parsed}
-            ---</br>
-            <a href="http://${process.env.HOST_IP}:3000/ticket/id?id=${ticket.id}">Link do zgłoszenia</a>
-        `,
-    });
-    console.log("Message sent: %s", notification.messageId);
-}
-async function ticketCreatedNotification(to, ticket) {
-    let notification = await transporter.sendMail({
-        from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address
-        to: to, // list of receivers
-        subject: `Zgłoszenie '${ticket.id}' zostało utworzone`, // Subject line
-        text: "Hello world?", // plain text body
-        html: `
-            Utworzono nowe zgłoszenie ${ticket.id} o tytule ${ticket.title}.
-            ${ticket.description}
-            <a href="http://${process.env.HOST_IP}:3000/ticket/id?id=${ticket.id}">Link do zgłoszenia</a>
-        `,
-    });
-    console.log("Message sent: %s", notification.messageId);
-}
-async function ticketClosedNotification(ticket) {
-    let notification = await transporter.sendMail({
-        from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address
-        to: ticket.issuedBy, // list of receivers
-        subject: `Zgłoszenie '${ticket.id}' zostało zrealizowane`, // Subject line
-        text: "Hello world?", // plain text body
-        html: `
-            Zgłoszenie ${ticket.id} o tytule ${ticket.title} zostało zrealizowane.
-            <a href="http://${process.env.HOST_IP}:3000/ticket/id?id=${ticket.id}">Link do zgłoszenia</a>
-        `,
-    });
-    console.log("Message sent: %s", notification.messageId);
-}
 
 module.exports = Router;
