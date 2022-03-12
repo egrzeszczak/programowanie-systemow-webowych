@@ -251,6 +251,32 @@ Router.post("/update/category", Authenticate, async (req, res) => {
         res.status(404).send(error);
     }
 });
+Router.post("/update/assign", Authenticate, async (req, res) => {
+    //  { id: req.body.id, status: req.body.status }
+    console.log(req.body);
+    try {
+        let ticketToChange = await Ticket.findOneAndUpdate(
+            { id: req.body.id },
+            {
+                $set: {
+                    assignedTo: req.body.assignedTo,
+                    updatedOn: new Date(),
+                },
+                $push: {
+                    content: {
+                        type: "assign",
+                        date: new Date(),
+                        owner: req.loggedIn.email,
+                        change: req.body.assignedTo,
+                    },
+                },
+            }
+        );
+        res.status(200).send("OK");
+    } catch (error) {
+        res.status(404).send(error);
+    }
+});
 
 Router.post("/new", Authenticate, async (req, res) => {
     try {
@@ -269,6 +295,7 @@ Router.post("/new", Authenticate, async (req, res) => {
             createdOn: new Date(),
             updatedOn: new Date(),
             issuedBy: req.loggedIn.email,
+            assignedTo: 'none',
             involved: [req.loggedIn.email],
             content: [
                 {

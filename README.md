@@ -42,6 +42,7 @@
     * [Wymagane środowisko](#wymagane-srodowisko)
     * [Instalacja](#instalacja)
 * [Licencja](#licencja)
+* [Zrzuty ekranu](#zrzuty-ekranu)
 * [Kontakt](#kontakt)
 
 ## Opis projektu
@@ -117,6 +118,27 @@ TBD
 ## Licencja
 
 Licencja jest dostępna w pliku `LICENSE`
+
+## Zrzuty ekranu
+
+![](2.png)
+Ekran logowania
+
+![](1.png)
+Przykładowe zgłoszenie w ServiceFront
+
+![](3.png)
+Przykład listy zgłoszeń otwartych
+
+![](4.png)
+Widok zgłoszenia dla specjalisty
+
+![](5.png)
+Wysyłanie wiadomości (możliwy **Markdown**)
+
+![](6.png)
+Wysyłanie wiadomości (możliwy **Markdown**)
+
 
 ## Kontakt
 

@@ -17,6 +17,7 @@ const TicketSchema = new Mongoose.Schema({
     createdOn: Date,
     updatedOn: Date,
     issuedBy: String,
+    assignedTo: String,
     content: [],
     involved: [String], // to sort out in the next commit
 })

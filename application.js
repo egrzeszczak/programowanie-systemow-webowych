@@ -9,6 +9,7 @@ const Cors = require("cors");
 // Routers
 const TicketRouter = require("./routes/ticket");
 const LoginRouter = require("./routes/login");
+const UserRouter = require("./routes/user");
 
 // Parser cookisów
 const CookieParser = require("cookie-parser");
@@ -43,6 +44,7 @@ Application.use(function (req, res, next) {
 // Router init
 Application.use("/ticket", TicketRouter);
 Application.use("/login", LoginRouter);
+Application.use("/user", UserRouter);
 
 // Views
 Application.set("view engine", "ejs");

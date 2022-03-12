@@ -43,7 +43,9 @@
             <!-- DEETS -->
             <p class="text-xs text-teal-600 font-normal mb-1">Szczegóły</p>
             <div class="border border-slate-100 shadow-sm rounded-sm p-2">
-                <div class="flex flex-row items-center justify-between p-2 bg-slate-50">
+                <div
+                    class="flex flex-row items-center justify-between p-2 bg-slate-50"
+                >
                     <div class="text-xs text-slate-600">Utworzył</div>
                     <div class="text-xs font-medium">
                         {{ ticket.issuedBy }}
@@ -55,7 +57,9 @@
                         {{ createdOnReadable }}
                     </div>
                 </div>
-                <div class="flex flex-row items-center justify-between p-2 bg-slate-50">
+                <div
+                    class="flex flex-row items-center justify-between p-2 bg-slate-50"
+                >
                     <div class="text-xs text-slate-600">Zaktualizowano</div>
                     <div class="text-xs font-medium">
                         {{ updatedOnReadable }}
@@ -84,7 +88,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-row items-center justify-between p-2 bg-slate-50">
+                <div
+                    class="flex flex-row items-center justify-between p-2 bg-slate-50"
+                >
                     <div class="text-xs text-slate-600">Kategoria</div>
                     <div class="">
                         <select
@@ -202,20 +208,28 @@
                                 {{ value }}
                             </option>
                         </select>
-                        <div v-else class="rounded-sm text-xs text-right"> {{definition.priority[ticket.priority]}} </div>
+                        <div v-else class="rounded-sm text-xs text-right">
+                            {{ definition.priority[ticket.priority] }}
+                        </div>
                     </div>
                 </div>
-                <div class="flex flex-row items-center justify-between p-2 bg-slate-50">
+                <div
+                    class="flex flex-row items-center justify-between p-2 bg-slate-50"
+                >
                     <div class="text-xs text-slate-600">Przypisane</div>
                     <div class="">
-                        <input
+                        <autocomplete-input
+                            :primary="'email'"
+                            :secondary="'access'"
+                            :apibase="'/user'"
+                            :minchartoquery="2"
+                            :placeholder="ticket.assignedTo"
+                            @selected="assignUser"
                             v-if="user.access > 0"
-                            class="w-48 bg-white border border-slate-200 rounded-sm text-xs p-1"
-                            type="email"
-                            name="assignedTo"
-                            id="assignedTo"
-                        />
-                        <div v-else class="w-48 rounded-sm text-xs text-right"> none </div>
+                        ></autocomplete-input>
+                        <div v-else class="w-48 rounded-sm text-xs text-right">
+                            {{ ticket.assignedTo }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -450,6 +464,42 @@
                         </div>
                     </div>
                 </div>
+                <!-- ASSIGN -->
+                <div
+                    v-if="event.type == 'assign'"
+                    class="bg-white rounded-sm text-xs mx-2 p-2"
+                >
+                    <div class="flex flex-row">
+                        <div
+                            class="flex flex-col justify-center items-center mr-2"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                class="w-4 h-4 fill-current text-slate-700"
+                            >
+                                <path
+                                    d="M12,12A6,6,0,1,0,6,6,6.006,6.006,0,0,0,12,12ZM12,2A4,4,0,1,1,8,6,4,4,0,0,1,12,2Z"
+                                />
+                                <path
+                                    d="M12,14a9.01,9.01,0,0,0-9,9,1,1,0,0,0,2,0,7,7,0,0,1,14,0,1,1,0,0,0,2,0A9.01,9.01,0,0,0,12,14Z"
+                                />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <div class="font-bold text-slate-700">
+                                    {{ event.owner }}
+                                </div>
+                                <div class="ml-1 font-light">
+                                    {{ dateReadable(event.date) }}
+                                </div>
+                            </div>
+                            Zgłoszenie zostało przypisane do
+                            <b>{{ event.change }}</b>
+                        </div>
+                    </div>
+                </div>
                 <!-- MAIL -->
                 <div
                     v-if="event.type == 'mail'"
@@ -553,107 +603,215 @@
 </div>
 
 <script>
-
-    var vm = new Vue({
-        el: "#ticket",
-        data() {
-            return {
-                definition: <%- JSON.stringify(definition) %>,
-                ticket: <%- JSON.stringify(ticket) %>,
-                user: <%- JSON.stringify(req.loggedIn) %>,
-                message: '',
-                loading: false,
-            }
-        },
-        computed: {
-            createdOnReadable() {
-                let temp = new Date(this.ticket.createdOn)
-                return temp.toLocaleString()
-            },
-            updatedOnReadable() {
-                let temp = new Date(this.ticket.updatedOn)
-                return temp.toLocaleString()
-            },
-            reverseContent() {
-                // return this.ticket.content
-                return this.ticket.content.reverse()
-            }
-        },
-        created() {
-            this.timer = setInterval(this.update, 5000);
-        },
-        methods: {
-            dateReadable(date) {
-                let temp = new Date(date)
-                return temp.toLocaleString()
-            },
-            quoteMessage(owner, messageQuoted) {
-                let messageSplit = messageQuoted.split('\n')
-                let prepareMessage = [`> **${owner}**\n> `]
-                messageSplit.forEach(element => {
-                    prepareMessage.push("> " + element)
-                });
-                this.message = prepareMessage.join('\n') + "\n"
-                setTimeout(() => {this.$refs.message.focus()})
-            },
-            async update() {
-                this.loading = true
-                this.ticket = await axios.post("/ticket/info", {
-                    id: this.ticket.id,
-                }).then((response) => {
-                    this.loading = false
-                    return response.data
-                }).catch((error) => {
-                    console.log(error)
-                    this.loading = false
-                })
-            },
-            async sendMessage() {
-                await axios.post("/ticket/message", {
-                    id: this.ticket.id,
-                    message: this.message
-                }).then(async (response) => {
-                    this.message = '';
-                    await this.update()
-                }).catch((error) => {
-                    console.log(error)
-                })
-            },
-            async updateStatus() {
-                await axios.post("/ticket/update/status", {
-                    id: this.ticket.id,
-                    status: this.ticket.status
-                }).then(async (response) => {
-                    // SUCCESS
-                    await this.update()
-                }).catch((error) => {
-                    console.log(error)
-                })
-            },
-            async updateCategory() {
-                await axios.post("/ticket/update/category", {
-                    id: this.ticket.id,
-                    category: this.ticket.category
-                }).then(async (response) => {
-                    // SUCCESS
-                    await this.update()
-                }).catch((error) => {
-                    console.log(error)
-                })
-            },
-            async updatePriority() {
-                await axios.post("/ticket/update/priority", {
-                    id: this.ticket.id,
-                    priority: this.ticket.priority
-                }).then(async (response) => {
-                    // SUCCESS
-                    await this.update()
-                }).catch((error) => {
-                    console.log(error)
-                })
-            },
-        },
+    Vue.component('autocomplete-input', {
+        props: {
+    		primary: String,
+    		secondary: String,
+    		apibase: String,
+    		minchartoquery: Number,
+    		placeholder: String
+    	},
+    	data() {
+    		return {
+    			Input: '',
+    			Results: null,
+    			ShowResults: false,
+    			EnterStop: false,
+    			PosY: 0
+    		}
+    	},
+    	methods: {
+    		async Fetch() {
+    			this.Results = await axios
+    				.get(`${this.apibase}/${this.Input}`)
+    				.then(response => {
+    					this.ShowResults = true
+    					return response.data
+    				})
+    				.catch(error => {
+    					this.ShowResults = false
+    					console.log(error)
+    				})
+    		},
+    		KeyMonitor(Event) {
+    			if (Event.key == 'ArrowUp') {
+    				if (this.PosY > 0) {
+    					this.PosY--
+    				}
+    			} else if (Event.key == 'ArrowDown') {
+    				if (this.Results && this.PosY < this.Results.length - 1) {
+    					this.PosY++
+    				}
+    			} else if (Event.key == 'Enter') {
+    				this.Select()
+    			} else if (Event.key == 'Tab' || Event.key == 'Escape') {
+    				this.ShowResults = false
+    			}
+    		},
+    		Select() {
+    			this.ShowResults = false
+    			this.$emit('selected', this.Results[this.PosY])
+    			this.Input = String(this.Results[this.PosY][this.primary])
+    			this.EnterStop = true
+    		}
+    	},
+    	watch: {
+    		async Input(N, O) {
+    			if (!this.EnterStop) {
+    				this.PosY = 0
+    				if (N.length >= this.minchartoquery) {
+    					await this.Fetch()
+    				} else this.ShowResults = false
+    			} else this.EnterStop = false
+    		},
+    		Results(N) {
+    			// console.log(this.Results)
+    		}
+    	},
+      template: `
+        <div class="my-0.5">
+    		<input
+    			type="text"
+    			v-model="Input"
+    			class="w-72 bg-white border border-slate-200 rounded-sm text-xs p-1 text-right"
+    			@keyup="KeyMonitor"
+    			:placeholder="placeholder"
+    		/>
+    		<div class="relative">
+    			<div class="absolute w-full bg-white text-slate-900 shadow-md rounded-sm text-xs" v-if="ShowResults">
+    				<div
+    					class="p-1 cursor-pointer overflow-hidden"
+    					v-for="(Item, Index) in Results"
+    					:key="Index"
+    					:class="{ 'text-teal-500': Index == PosY }"
+    					@mouseover="PosY = Index"
+    					@click="Select"
+    				>
+    					<div class="text-xs">{{ Item[primary] }}</div>
+    					<!-- <div class="text-xs">
+    						{{ Item[secondary] }}
+    					</div> -->
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+        `
     })
+
+
+            var vm = new Vue({
+                el: "#ticket",
+                data() {
+                    return {
+                        definition: <%- JSON.stringify(definition) %>,
+                        ticket: <%- JSON.stringify(ticket) %>,
+                        user: <%- JSON.stringify(req.loggedIn) %>,
+                        message: '',
+                        loading: false,
+                    }
+                },
+                computed: {
+                    createdOnReadable() {
+                        let temp = new Date(this.ticket.createdOn)
+                        return temp.toLocaleString()
+                    },
+                    updatedOnReadable() {
+                        let temp = new Date(this.ticket.updatedOn)
+                        return temp.toLocaleString()
+                    },
+                    reverseContent() {
+                        // return this.ticket.content
+                        return this.ticket.content.reverse()
+                    }
+                },
+                created() {
+                    this.timer = setInterval(this.update, 5000);
+                },
+                methods: {
+                    async assignUser(e) {
+                        if(this.ticket.assignedTo != e.email) {
+                            await axios.post("/ticket/update/assign", {
+                                id: this.ticket.id,
+                                assignedTo: e.email
+                            }).then(async (response) => {
+                                // loading pewnie jeszcze
+                                await this.update()
+                            }).catch((error) => {
+                                console.log(error)
+                            })
+                        }
+                    },
+                    dateReadable(date) {
+                        let temp = new Date(date)
+                        return temp.toLocaleString()
+                    },
+                    quoteMessage(owner, messageQuoted) {
+                        let messageSplit = messageQuoted.split('\n')
+                        let prepareMessage = [`> **${owner}**\n> `]
+                        messageSplit.forEach(element => {
+                            prepareMessage.push("> " + element)
+                        });
+                        this.message = prepareMessage.join('\n') + "\n"
+                        setTimeout(() => {this.$refs.message.focus()})
+                    },
+                    async update() {
+                        this.loading = true
+                        this.ticket = await axios.post("/ticket/info", {
+                            id: this.ticket.id,
+                        }).then((response) => {
+                            this.loading = false
+                            return response.data
+                        }).catch((error) => {
+                            console.log(error)
+                            this.loading = false
+                        })
+                    },
+                    async sendMessage() {
+                        await axios.post("/ticket/message", {
+                            id: this.ticket.id,
+                            message: this.message
+                        }).then(async (response) => {
+                            this.message = '';
+                            await this.update()
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                    },
+                    async updateStatus() {
+                        await axios.post("/ticket/update/status", {
+                            id: this.ticket.id,
+                            status: this.ticket.status
+                        }).then(async (response) => {
+                            // SUCCESS
+                            await this.update()
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                    },
+                    async updateCategory() {
+                        await axios.post("/ticket/update/category", {
+                            id: this.ticket.id,
+                            category: this.ticket.category
+                        }).then(async (response) => {
+                            // SUCCESS
+                            await this.update()
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                    },
+                    async updatePriority() {
+                        await axios.post("/ticket/update/priority", {
+                            id: this.ticket.id,
+                            priority: this.ticket.priority
+                        }).then(async (response) => {
+                            // SUCCESS
+                            await this.update()
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                    },
+                },
+            })
 </script>
 
 <%- include('../../components/_footer.ejs') %>
