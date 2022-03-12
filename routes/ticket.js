@@ -36,10 +36,27 @@ Router.get("/id", Authenticate, async (req, res) => {
             console.log(error);
         });
 });
+
+Router.get("/my", Authenticate, async (req, res) => {
+    await Ticket.find({ issuedBy: req.loggedIn.email })
+        .then((tickets) => {
+            res.render("ticket/index", {
+                title: "Moje zgłoszenia",
+                req: req,
+                tickets: tickets,
+                definition: definition,
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+});
+
 Router.get("/open", Authenticate, async (req, res) => {
     await Ticket.find({ status: ["new", "in-progress"] })
         .then((tickets) => {
             res.render("ticket/index", {
+                title: "Wszystkie otwarte zgłoszenia",
                 req: req,
                 tickets: tickets,
                 definition: definition,
@@ -53,6 +70,7 @@ Router.get("/closed", Authenticate, async (req, res) => {
     await Ticket.find({ status: "done" })
         .then((tickets) => {
             res.render("ticket/index", {
+                title: "Wszystkie zamknięte zgłoszenia",
                 req: req,
                 tickets: tickets,
                 definition: definition,

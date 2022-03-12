@@ -1,8 +1,8 @@
 <%- include('../../components/_header.ejs') %>
-<div class="mb-4">Zgłoszenia</div>
+<div class="mb-4"><%= title %></div>
 <% tickets.forEach(ticket => { %>
 
-<div class="grid grid-cols-12 border-b shadow-sm mb-1 hover:bg-teal-50 rounded-md">
+<div class="grid grid-cols-12 border-b shadow-sm mb-4 hover:bg-teal-50 rounded-md">
     <div class="col-span-2 pt-0.5 rounded-tl-md font-sans text-sm font-medium flex items-center justify-center"><a class="hover:underline" href="/ticket/id?id=<%= ticket.id%>"><%= ticket.id %></a>   </div>
     <div class="col-span-10 pt-0.5 text-slate-700 font-medium text-lg px-2"><a class="hover:underline" href="/ticket/id?id=<%= ticket.id%>"><%= ticket.title %></a></div>
     <div class="col-span-2 text-xs font-normal flex items-center justify-center text-center">

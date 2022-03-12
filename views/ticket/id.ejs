@@ -5,10 +5,14 @@
         :class="{
             'border-l-8 border-teal-200': ticket.status == 'new',  
             'border-l-8 border-amber-400 bg-amber-100': ticket.status == 'in-progress',  
-            'border-l-8 border-slate-400 bg-slate-100 text-slate-400': ticket.status == 'done',  
+            'border-l-8 border-slate-400 bg-slate-100 text-slate-400': ticket.status == 'done',
+            'flex mx-auto w-8/12': user.access == 0,    
         }"
     >
-        <div class="flex flex-row items-center justify-between">
+        <div
+            class="flex-1 flex flex-row items-center justify-between"
+            :class="{'col-start-3': user.access == 0}"
+        >
             <div class="flex flex-row items-end">
                 <div class="text-xl font-mono mr-3">{{ ticket.id }}</div>
                 <div class="text-3xl font-medium">{{ ticket.title }}</div>
@@ -32,11 +36,14 @@
         </div>
     </div>
 
-    <div class="grid grid-flow-col grid-cols-12 gap-4">
-        <div class="col-span-4">
+    <div
+        :class="{'grid grid-flow-col grid-cols-12 gap-4': user.access > 0, 'flex flex-col items-center': user.access == 0}"
+    >
+        <div class="col-span-4" :class="{'w-8/12 mb-2': user.access == 0}">
+            <!-- DEETS -->
             <p class="text-xs text-teal-600 font-normal mb-1">Szczegóły</p>
             <div class="border border-slate-100 shadow-sm rounded-sm p-2">
-                <div class="flex flex-row items-center justify-between p-2">
+                <div class="flex flex-row items-center justify-between p-2 bg-slate-50">
                     <div class="text-xs text-slate-600">Utworzył</div>
                     <div class="text-xs font-medium">
                         {{ ticket.issuedBy }}
@@ -48,7 +55,7 @@
                         {{ createdOnReadable }}
                     </div>
                 </div>
-                <div class="flex flex-row items-center justify-between p-2">
+                <div class="flex flex-row items-center justify-between p-2 bg-slate-50">
                     <div class="text-xs text-slate-600">Zaktualizowano</div>
                     <div class="text-xs font-medium">
                         {{ updatedOnReadable }}
@@ -56,8 +63,9 @@
                 </div>
                 <div class="flex flex-row items-center justify-between p-2">
                     <div class="text-xs text-slate-600">Status</div>
-                    <div class="">
+                    <div>
                         <select
+                            v-if="user.access > 0"
                             v-model="ticket.status"
                             :selected="ticket.status"
                             class="w-48 bg-white border border-slate-200 rounded-sm text-xs p-1"
@@ -71,12 +79,16 @@
                                 {{ value }}
                             </option>
                         </select>
+                        <div v-else class="rounded-sm text-xs text-right">
+                            {{ definition.status[ticket.status] }}
+                        </div>
                     </div>
                 </div>
-                <div class="flex flex-row items-center justify-between p-2">
+                <div class="flex flex-row items-center justify-between p-2 bg-slate-50">
                     <div class="text-xs text-slate-600">Kategoria</div>
                     <div class="">
                         <select
+                            v-if="user.access > 0"
                             v-model="ticket.category"
                             :selected="ticket.category"
                             class="w-48 bg-white border border-slate-200 rounded-sm text-xs p-1"
@@ -90,6 +102,9 @@
                                 {{ value }}
                             </option>
                         </select>
+                        <div v-else class="rounded-sm text-xs text-right">
+                            {{ definition.category[ticket.category] }}
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-row items-center justify-between p-2">
@@ -173,6 +188,7 @@
                             </svg>
                         </div>
                         <select
+                            v-if="user.access > 0"
                             v-model="ticket.priority"
                             :selected="ticket.priority"
                             class="w-48 bg-white border border-slate-200 rounded-sm text-xs p-1"
@@ -186,23 +202,34 @@
                                 {{ value }}
                             </option>
                         </select>
+                        <div v-else class="rounded-sm text-xs text-right"> {{definition.priority[ticket.priority]}} </div>
                     </div>
                 </div>
-                <div class="flex flex-row items-center justify-between p-2">
+                <div class="flex flex-row items-center justify-between p-2 bg-slate-50">
                     <div class="text-xs text-slate-600">Przypisane</div>
                     <div class="">
                         <input
+                            v-if="user.access > 0"
                             class="w-48 bg-white border border-slate-200 rounded-sm text-xs p-1"
                             type="email"
                             name="assignedTo"
                             id="assignedTo"
                         />
+                        <div v-else class="w-48 rounded-sm text-xs text-right"> none </div>
                     </div>
                 </div>
             </div>
             <!-- INVOLVED -->
-            <p class="text-xs text-teal-600 font-normal mb-1 mt-2">Osoby</p>
-            <div class="border border-slate-100 shadow-sm rounded-sm p-2">
+            <p
+                class="text-xs text-teal-600 font-normal mb-1 mt-2"
+                v-if="user.access > 0"
+            >
+                Osoby
+            </p>
+            <div
+                class="border border-slate-100 shadow-sm rounded-sm p-2"
+                v-if="user.access > 0"
+            >
                 <div
                     v-for="(email, index) in ticket.involved"
                     :key="index"
@@ -229,7 +256,7 @@
             </div>
         </div>
 
-        <div class="col-span-8">
+        <div class="col-span-8" :class="{'w-8/12': user.access == 0}">
             <p class="text-xs text-teal-600 font-normal mb-1">Opis</p>
             <div
                 v-html="ticket.description"
