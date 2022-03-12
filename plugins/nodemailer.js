@@ -45,6 +45,20 @@ module.exports = {
         });
         console.log("Message sent: %s", notification.messageId);
     },
+    ticketAssigned: async function (to, ticket) {
+        let notification = await transporter.sendMail({
+            from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address
+            to: to, // list of receivers
+            subject: `Zgłoszenie '${ticket.id}' zostało do Ciebie przypisane`, // Subject line
+            text: "Hello world?", // plain text body
+            html: `
+                Zgłoszenie ${ticket.id} o tytule ${ticket.title} zostało do Ciebie przypisane.
+                ${ticket.description}
+                <a href="http://${process.env.HOST_IP}:3000/ticket/id?id=${ticket.id}">Link do zgłoszenia</a>
+            `,
+        });
+        console.log("Message sent: %s", notification.messageId);
+    },
     ticketClosed: async function (ticket) {
         let notification = await transporter.sendMail({
             from: '"ServiceFront" <servicefront@ambas.com.pl>', // sender address

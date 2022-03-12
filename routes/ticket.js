@@ -272,6 +272,22 @@ Router.post("/update/assign", Authenticate, async (req, res) => {
                 },
             }
         );
+
+        await mailer.ticketAssigned(req.body.assignedTo, ticketToChange);
+
+        await Ticket.findOneAndUpdate(
+            { id: req.body.id },
+            {
+                $push: {
+                    content: {
+                        type: "mail",
+                        date: new Date(),
+                        owner: req.body.assignedTo
+                    },
+                },
+            }
+        );
+
         res.status(200).send("OK");
     } catch (error) {
         res.status(404).send(error);
