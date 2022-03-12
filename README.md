@@ -58,11 +58,11 @@ Projekt jest warunkiem zaliczenia przedmiotu **Programowanie Systemów Webowych*
 ### Stack
 
 <p align="left">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/2ae2a900d2f041da66e950e4d48052658d850630/icons/javascript/javascript-original.svg" width=32 height=32 style="margin: 0 0.5em 0 0.5em; flex: 1">
+    <img src="https://raw.githubusercontent.com/devicons/devicon/2ae2a900d2f041da66e950e4d48052658d850630/icons/vuejs/vuejs-original.svg" width=32 height=32 style="object-fit: cover; margin: 0 0.5em 0 0.5em; flex: 1">
     <img src="https://raw.githubusercontent.com/devicons/devicon/2ae2a900d2f041da66e950e4d48052658d850630/icons/express/express-original.svg" width=32 height=32 style="object-fit: cover; margin: 0 0.5em 0 0.5em; flex: 1">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/2ae2a900d2f041da66e950e4d48052658d850630/icons/tailwindcss/tailwindcss-plain.svg" width=32 height=32 style="object-fit: cover; margin: 0 0.5em 0 0.5em; flex: 1">
+    <img src="https://raw.githubusercontent.com/devicons/devicon/2ae2a900d2f041da66e950e4d48052658d850630/icons/javascript/javascript-original.svg" width=32 height=32 style="margin: 0 0.5em 0 0.5em; flex: 1">
     <img src="https://raw.githubusercontent.com/devicons/devicon/2ae2a900d2f041da66e950e4d48052658d850630/icons/mongodb/mongodb-original.svg" width=32 height=32 style="margin: 0 0.5em 0 0.5em; flex: 1">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/2ae2a900d2f041da66e950e4d48052658d850630/icons/redis/redis-original.svg" width=32 height=32 style="object-fit: cover; margin: 0 0.5em 0 0.5em; flex: 1">
+    <img src="https://raw.githubusercontent.com/devicons/devicon/2ae2a900d2f041da66e950e4d48052658d850630/icons/tailwindcss/tailwindcss-plain.svg" width=32 height=32 style="object-fit: cover; margin: 0 0.5em 0 0.5em; flex: 1">
 </p>
 
 
@@ -95,7 +95,7 @@ Projekt jest warunkiem zaliczenia przedmiotu **Programowanie Systemów Webowych*
 #### Rest API
 
 - Aplikacja wykorzystuje Rest API do komunikacji z bazą danych (`MongoDB`)
-- Wykorzystanie Rest API do weryfikacji tokenów JWT (`Redis`)
+- Wykorzystanie Rest API do weryfikacji tokenów JWT
 
 #### Workery
 
@@ -112,8 +112,7 @@ TBD
 
 1. `git clone github.com/egrzeszczak/programowanie-systemow-webowych`
 2. `npm install`
-3. Konfiguracja bazy danych w `./config/database.js`
-4. `npm run dev` albo ~~`npm run build`~~
+3. `npm run dev` albo ~~`npm run build`~~
 
 ## Licencja
 

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const Express = require("express");
 const Router = Express.Router();
 const CookieParser = require("cookie-parser");
@@ -8,22 +9,17 @@ const definition = require("../config/definition");
 const Marked = require("marked");
 const { JSDOM } = require("jsdom");
 const DomPurifyModule = require("dompurify");
-const {
-    MAIL_HOST,
-    MAIL_PORT,
-    MAIL_USER,
-    MAIL_PASS,
-} = require("../config/mailer");
+
 const DomPurify = DomPurifyModule(new JSDOM().window);
 
 const transporter = nodemailer.createTransport({
-    host: MAIL_HOST,
-    port: MAIL_PORT,
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
     secure: false, // true for 465, false for other ports
     requireTLS: true,
     auth: {
-        user: MAIL_USER, // generated ethereal user
-        pass: MAIL_PASS, // generated ethereal password
+        user: process.env.MAIL_USER, // generated ethereal user
+        pass: process.env.MAIL_PASS, // generated ethereal password
     },
 });
 
@@ -122,30 +118,32 @@ Router.post("/message", Authenticate, async (req, res) => {
         );
 
         // Send notifications to each user involved excluding the user who has sent the message
-        let senderExcluded = ticket.involved.filter(email => email != req.loggedIn.email)
-        console.log(senderExcluded)
-        senderExcluded.forEach(async (to) => {
-            await messageAddedNotification(
-                req.loggedIn.email,
-                to,
-                message_parsed,
-                ticket
-            );
-        });
-
-        // Add notification info to ticket
-        await Ticket.findOneAndUpdate(
-            { id: req.body.id },
-            {
-                $push: {
-                    content: {
-                        type: "mail",
-                        date: new Date(),
-                        owner: senderExcluded.join(', '),
-                    },
-                },
-            }
+        let senderExcluded = ticket.involved.filter(
+            (email) => email != req.loggedIn.email
         );
+        if (senderExcluded.length > 0) {
+            senderExcluded.forEach(async (to) => {
+                await messageAddedNotification(
+                    req.loggedIn.email,
+                    to,
+                    message_parsed,
+                    ticket
+                );
+            });
+            // Add notification info to ticket
+            await Ticket.findOneAndUpdate(
+                { id: req.body.id },
+                {
+                    $push: {
+                        content: {
+                            type: "mail",
+                            date: new Date(),
+                            owner: senderExcluded.join(", "),
+                        },
+                    },
+                }
+            );
+        }
 
         // OK
         res.status(200).send("OK");
@@ -174,10 +172,9 @@ Router.post("/update/status", Authenticate, async (req, res) => {
                 },
             }
         );
-          
-        
-        if(req.body.status == 'done') {
-            await ticketClosedNotification(ticketToChange)
+
+        if (req.body.status == "done") {
+            await ticketClosedNotification(ticketToChange);
         }
 
         res.status(200).send("OK");
@@ -272,7 +269,7 @@ Router.post("/new", Authenticate, async (req, res) => {
 
         await NewTicket.save();
 
-        await ticketCreatedNotification(req.loggedIn.email, NewTicket)
+        await ticketCreatedNotification(req.loggedIn.email, NewTicket);
 
         res.redirect(`/ticket/id?id=${uniqueid}`);
     } catch (error) {
