@@ -1,10 +1,39 @@
-<form action="/login/register" method="post">
+<form action="/login/register" method="post" class="grid grid-flow-row">
+    <label for="email" class="flex-1 text-left text-teal-900 text-xs font-bold">Adres e-mail</label>
     <input
         type="email"
         name="email"
         id="email"
-        placeholder="Adres e-mail"
+        placeholder="adres@domena.pl"
+        class="bg-white border border-slate-200 text-slate-900 rounded-sm text-sm p-2 w-80 my-2"
+        required
     />
-    <input type="password" name="password" id="password" placeholder="Hasło" />
-    <input type="submit" value="Utwórz konto" />
+    <label for="password" class="flex-1 text-left text-teal-900 text-xs font-bold">Hasło</label>
+    <input
+        type="password"
+        name="password"
+        id="password"
+        placeholder="Hasło"
+        class="bg-white border border-slate-200 text-slate-900 rounded-sm text-sm p-2 w-80 my-2"
+        required
+    />
+    <input
+        type="password2"
+        name="password2"
+        id="password2"
+        placeholder="Powtórz hasło"
+        class="bg-white border border-slate-200 text-slate-900 rounded-sm text-sm p-2 w-80 my-2"
+        required
+    />
+    <input
+        type="submit"
+        value="Utwórz konto"
+        class="bg-white border-2 border-teal-700 text-teal-800 rounded-lg py-2 px-4 mt-4 w-52 mx-auto cursor-pointer"
+    />
+    <p class="text-xs my-3">Posiadasz konto? <a class="underline hover:text-teal-300" href="/login">Zaloguj się</a></p>
+    <!-- <a
+        href="/login/register"
+        class="bg-white text-slate-900 rounded-sm text-xs py-1 px-4 my-2 w-28 text-center cursor-pointer"
+        >Utwórz konto</a
+    > -->
 </form>
