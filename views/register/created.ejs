@@ -83,12 +83,15 @@
                 </svg>
             </h1>
             <p class="text-white">Utwórz konto w <b>ServiceFront</b></p>
-            <div class="flex flex-row justify-center my-4">
-                <%- include('../../components/login/_register_form.ejs') %>
-            </div>
-            <% if(error) { %>
-            <p class="text-xs text-red-300"><%= error %></p>
-            <% } %>
+            <p class="mt-4 text-sm">
+                Pomyślnie wysłałeś wniosek o utworzenie konta. Czekaj na maila z
+                informacją o nadaniu uprawnień
+            </p>
+            <p class="mt-4">
+                <a class="text-xs pt-6 cursor-pointer underline hover:text-teal-300" href="/"
+                    >Wróć do strony logowania</a
+                >
+            </p>
         </div>
     </div>
 </section>

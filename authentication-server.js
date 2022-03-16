@@ -7,6 +7,7 @@ const CookieParser = require("cookie-parser");
 const JWT = require("jsonwebtoken");
 const Mongoose = require("mongoose");
 const User = require("./models/User");
+const SHA256 = require("crypto-js/sha256")
 
 // Setup
 Application.use(Express.json());
@@ -30,7 +31,7 @@ Application.post("/login", async (req, res) => {
     // Ułóż ładnie request
     const Attempt = {
         email: req.body.email,
-        password: req.body.password,
+        password: SHA256(req.body.password).toString(),
     };
 
     // Weryfikacja czy taki użytkownik istnieje w systemie
@@ -41,30 +42,34 @@ Application.post("/login", async (req, res) => {
 
     // Nie znaleziono takiego username
     if (UserCheck.length == 0) {
-        res.sendStatus(404);
+        res.sendStatus(401);
     } else if (
         Attempt.email == UserCheck[0].email &&
         Attempt.password == UserCheck[0].password
     ) {
         // Jeśli istnieje
         // Wygeneruj token JWT - pobierz przywilej i nazwę uzytkownika
-        const AccessToken = JWT.sign(
-            {
-                email: UserCheck[0].email,
-                access: UserCheck[0].access,
-            },
-            process.env.ACCESS_TOKEN_SECRET
-        );
-        // Zwróć token JWT
-        res.status(200).json({
-            AccessToken: AccessToken,
-            User: UserCheck[0].email,
-            Access: UserCheck[0].access,
-        });
+        if(UserCheck[0].access > -1) {
+            const AccessToken = JWT.sign(
+                {
+                    email: UserCheck[0].email,
+                    access: UserCheck[0].access,
+                },
+                process.env.ACCESS_TOKEN_SECRET
+            );
+            // Zwróć token JWT
+            res.status(200).json({
+                AccessToken: AccessToken,
+                User: UserCheck[0].email,
+                Access: UserCheck[0].access,
+            });
+        } else {
+            res.sendStatus(403)
+        }
     } else {
         // Źle podane hasło
-        // Zwróć błąd 404
-        res.sendStatus(404);
+        // Zwróć błąd 401
+        res.sendStatus(401);
     }
 });
 
@@ -89,37 +94,40 @@ Application.post("/verify", async (req, res) => {
 
 Application.post("/register", async (req, res) => {
     // Ułóż ładnie request
-    const UserCandidate = {
-        email: req.body.email,
-        password: req.body.password,
-    };
-
-    // Sprawdź czy czasem taki użytkownik nie istnieje
-    let UserCheck = await User.find({
-        email: UserCandidate.email,
-        password: UserCandidate.password,
-    });
-
-    if (UserCheck.length > 0) {
-        // Jeśli istnieje już taki użytkownik
-        // Zwróć 409 Conflict
-        res.sendStatus(409);
+    if (req.body.password != req.body.password2) {
+        res.sendStatus(403);
     } else {
-        // Jeśli nie istnieje
-        try {
-            // Utwórz użytkownika
-            let NewUser = new User({
-                email: UserCandidate.email,
-                password: UserCandidate.password,
-                access: 0,
-            });
+        const UserCandidate = {
+            email: req.body.email,
+            password: SHA256(req.body.password).toString(),
+        };
 
-            await NewUser.save();
+        // Sprawdź czy czasem taki użytkownik nie istnieje
+        let UserCheck = await User.find({
+            email: UserCandidate.email,
+        });
 
-            // Zwróć 201 Created
-            res.sendStatus(201);
-        } catch (error) {
-            res.sendStatus(500);
+        if (UserCheck.length > 0) {
+            // Jeśli istnieje już taki użytkownik
+            // Zwróć 409 Conflict
+            res.sendStatus(409);
+        } else {
+            // Jeśli nie istnieje
+            try {
+                // Utwórz użytkownika
+                let NewUser = new User({
+                    email: UserCandidate.email,
+                    password: UserCandidate.password,
+                    access: -1,
+                });
+
+                await NewUser.save();
+
+                // Zwróć 201 Created
+                res.sendStatus(201);
+            } catch (error) {
+                res.status(500).send(error);
+            }
         }
     }
 });

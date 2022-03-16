@@ -83,12 +83,16 @@
                 </svg>
             </h1>
             <p class="text-slate-100">Zaloguj do <b>ServiceFront</b></p>
+
             <div class="flex flex-row justify-center my-4">
-                <%- include('../../components/login/_login_form.ejs') %> 
+                <%- include('../../components/login/_login_form.ejs') %>
             </div>
+
+            <% if(error) { %>
+            <p class="text-xs text-red-300"><%= error %></p>
+            <% } %>
         </div>
     </div>
 </section>
-
 
 <%- include('../../components/_footer.ejs') %>
