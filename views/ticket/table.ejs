@@ -1,0 +1,39 @@
+<%- include('../../components/_header.ejs') %>
+<div class="mb-4 font-bold text-teal-900"><%= title %></div>
+<div id="ticket-table">
+    <!-- Board background -->
+    <div class="p-2 border bg-slate-50 overflow-x-auto rounded-sm">
+        <!-- Board inter-->
+        <div class="p-2 border bg-slate-100 flex flex-row h-screen rounded-sm">
+            <!-- Lanes-->
+            <div v-for="(user, index) in users" :key="user.email" class="p-1 border rounded-sm flex-shrink-0 bg-slate-200 w-72 mr-2">
+                <!-- Top header-->
+                <div class="bg-white p-2 text-xs border-slate-300 border rounded-sm flex flex-row justify-between mb-2">
+                    <div class="">{{ user.email }}</div>
+                    <div class="font-normal">12</div>
+                </div>
+                <!-- Content -->
+                <div class="bg-white p-2 text-xs border-l-4 border-teal-300 border rounded-sm flex flex-row justify-between h-16 mb-1 hover:border-blue-400 hover:border hover:shadow-md hover:border-l-4 cursor-pointer">
+                    <div class="">{{ user.email }}</div>
+                    <div class="font-normal">12</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let ticketTable = new Vue({
+        el: "#ticket-table",
+        data() {
+            return {
+                definition: <%- JSON.stringify(definition) %>,
+                tickets: <%- JSON.stringify(tickets) %>,
+                users: <%- JSON.stringify(users) %>,
+                user: <%- JSON.stringify(req.loggedIn) %>,
+            }
+        },
+    })
+</script>
+
+<%- include('../../components/_footer.ejs') %>

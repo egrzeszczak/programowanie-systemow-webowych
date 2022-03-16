@@ -5,3 +5,5 @@ package-lock.json
 /config/database.js
 /config/mailer.js
 /public/icons/*
+*_old.*
+/temp

@@ -1,4 +1,3 @@
-
 // Router
 const Express = require("express");
 const Router = Express.Router();
@@ -8,6 +7,7 @@ const CookieParser = require("cookie-parser");
 const Authenticate = require("../middleware/authenticate");
 // Ticket object for Mongoose
 const Ticket = require("../models/Ticket");
+const User = require("../models/User");
 
 // Ticket definition
 const definition = require("../config/definition");
@@ -18,11 +18,13 @@ const DomPurifyModule = require("dompurify");
 const DomPurify = DomPurifyModule(new JSDOM().window);
 
 // Mailer plugin
-const mailer = require('../plugins/nodemailer')
+const mailer = require("../plugins/nodemailer");
 
 Router.use(CookieParser());
 
-// VIEW
+// VIEWS
+
+// Wyświetlanie szczegółowe ticketa
 Router.get("/id", Authenticate, async (req, res) => {
     await Ticket.findOne({ id: req.query.id })
         .then((ticket) => {
@@ -33,10 +35,11 @@ Router.get("/id", Authenticate, async (req, res) => {
             });
         })
         .catch((error) => {
-            console.log(error);
+            res.status(404).send(error);
         });
 });
 
+// Wyświetlanie tylko ticketów które stworzyłem OTWARTE i ZAMKNIĘTE
 Router.get("/my", Authenticate, async (req, res) => {
     await Ticket.find({ issuedBy: req.loggedIn.email })
         .then((tickets) => {
@@ -48,10 +51,11 @@ Router.get("/my", Authenticate, async (req, res) => {
             });
         })
         .catch((error) => {
-            console.log(error);
+            res.status(404).send(error);
         });
 });
 
+// Wyświetlanie WSZYSTKICH ticketów otwartych
 Router.get("/open", Authenticate, async (req, res) => {
     await Ticket.find({ status: ["new", "in-progress"] })
         .then((tickets) => {
@@ -63,9 +67,11 @@ Router.get("/open", Authenticate, async (req, res) => {
             });
         })
         .catch((error) => {
-            console.log(error);
+            res.status(404).send(error);
         });
 });
+
+// Wyświetlanie WSZYSTKICH ticketów zamkniętych
 Router.get("/closed", Authenticate, async (req, res) => {
     await Ticket.find({ status: "done" })
         .then((tickets) => {
@@ -77,23 +83,42 @@ Router.get("/closed", Authenticate, async (req, res) => {
             });
         })
         .catch((error) => {
-            console.log(error);
+            res.status(404).send(error);
         });
 });
+
+// Wyświetlanie WSZYSTKICH ticketów otwartych w tablicy zgłoszeń
+Router.get("/table", Authenticate, async (req, res) => {
+    await User.find({ access: { $gte: 1 } }, "email access").then(async (users) => {
+        await Ticket.find({ status: ["new", "in-progress"] })
+            .then((tickets) => {
+                res.render("ticket/table", {
+                    title: "Tablica zgłoszeń",
+                    req: req,
+                    tickets: tickets,
+                    definition: definition,
+                    users: users,
+                });
+            })
+            .catch((error) => {
+                res.status(404).send(error);
+            });
+    });
+});
+
+// Formularz do nowego zgłoszenia
 Router.get("/new", Authenticate, (req, res) => {
     res.render("ticket/new", { req: req, definition: definition });
 });
 
-
-
-// API
+// Do odświeżania informacji Vue.js
 Router.post("/info", Authenticate, async (req, res) => {
     let ticket = await Ticket.findOne({ id: req.body.id })
         .then((ticket) => {
             res.status(200).send(ticket);
         })
         .catch((error) => {
-            console.log(error);
+            res.status(404).send(error);
         });
 });
 
@@ -112,8 +137,8 @@ Router.post("/message", Authenticate, async (req, res) => {
         message_parsed = message_parsed.replace(/>\n/g, ">");
         message_parsed = DomPurify.sanitize(message_parsed);
 
-        // Push the message to ticket
-        let ticket = await Ticket.findOneAndUpdate(
+        // Zamieszczenie wiadomości do zgłoszenia
+        await Ticket.findOneAndUpdate(
             { id: req.body.id },
             {
                 $set: {
@@ -132,40 +157,44 @@ Router.post("/message", Authenticate, async (req, res) => {
                     involved: req.loggedIn.email,
                 },
             }
-        );
-
-        // Send notifications to each user involved excluding the user who has sent the message
-        let senderExcluded = ticket.involved.filter(
-            (email) => email != req.loggedIn.email
-        );
-        if (senderExcluded.length > 0) {
-            senderExcluded.forEach(async (to) => {
-                await mailer.messageAdded(
-                    req.loggedIn.email,
-                    to,
-                    message_parsed,
-                    ticket
+        )
+            .then(async (ticket) => {
+                // Wysłanie powiadomienia e-mail do wszystkich oprócz zgłaszającego
+                let senderExcluded = ticket.involved.filter(
+                    (email) => email != req.loggedIn.email
                 );
-            });
-            // Add notification info to ticket
-            await Ticket.findOneAndUpdate(
-                { id: req.body.id },
-                {
-                    $push: {
-                        content: {
-                            type: "mail",
-                            date: new Date(),
-                            owner: senderExcluded.join(", "),
-                        },
-                    },
+                if (senderExcluded.length > 0) {
+                    senderExcluded.forEach(async (to) => {
+                        await mailer.messageAdded(
+                            req.loggedIn.email,
+                            to,
+                            message_parsed,
+                            ticket
+                        );
+                    });
+                    // Add notification info to ticket
+                    await Ticket.findOneAndUpdate(
+                        { id: req.body.id },
+                        {
+                            $push: {
+                                content: {
+                                    type: "mail",
+                                    date: new Date(),
+                                    owner: senderExcluded.join(", "),
+                                },
+                            },
+                        }
+                    );
                 }
-            );
-        }
-
-        // OK
-        res.status(200).send("OK");
+                // Wszystko jest ok wyślij 200
+                res.status(200).send("OK");
+            })
+            .catch((error) => {
+                // Błąd przy wysyłaniu komentarza
+                res.status(404).send(error);
+            });
     } catch (error) {
-        res.status(404).send("error ziomeczku :/");
+        res.status(404).send(error);
     }
 });
 Router.post("/update/status", Authenticate, async (req, res) => {
@@ -285,7 +314,7 @@ Router.post("/update/assign", Authenticate, async (req, res) => {
                     content: {
                         type: "mail",
                         date: new Date(),
-                        owner: req.body.assignedTo
+                        owner: req.body.assignedTo,
                     },
                 },
             }
@@ -314,7 +343,7 @@ Router.post("/new", Authenticate, async (req, res) => {
             createdOn: new Date(),
             updatedOn: new Date(),
             issuedBy: req.loggedIn.email,
-            assignedTo: 'none',
+            assignedTo: "none",
             involved: [req.loggedIn.email],
             content: [
                 {

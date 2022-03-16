@@ -380,7 +380,7 @@
                 <div
                     v-if="event.type == 'status'"
                     class="bg-white rounded-sm text-xs py-2 px-4"
-                    :class="{'bg-teal-200 border border-teal-300 shadow-sm': event.change == 'done'}"
+                    :class="{'bg-green-300 border border-green-300 shadow-sm': event.change == 'done'}"
                 >
                     <div class="flex flex-row">
                         <div
@@ -601,6 +601,8 @@
         </div>
     </div>
 </div>
+
+
 
 <script>
     Vue.component('autocomplete-input', {
