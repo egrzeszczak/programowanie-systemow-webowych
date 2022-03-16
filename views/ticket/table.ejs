@@ -23,7 +23,7 @@
                     v-for="(ticket, index) in tickets['none']"
                     :key="ticket.id"
                     :id="ticket.id"
-                    class="bg-white dark:bg-slate-800 p-2 text-xs flex flex-col justify-between border border-slate-300 rounded-sm h-16 mb-1 hover:border-blue-400 hover:border hover:shadow-md transition-colors cursor-pointer"
+                    class="bg-white dark:bg-slate-800 p-2 text-xs flex flex-col justify-between border border-slate-300 rounded-sm h-16 mb-1 hover:border-blue-400 hover:shadow-md transition-colors cursor-pointer"
                     :class="{
                         'border-l-4 border-r-4 border border-red-800 dark:border-red-500': ticket.priority == 'critical',
                         'border border-red-500 dark:border-red-800': ticket.priority == 'high',
@@ -132,7 +132,7 @@
                         <div class="">
                             {{ definition.category[ticket.category] }}
                         </div>
-                        <div class="font-light text-teal-900">
+                        <div class="font-light text-teal-900 dark:text-teal-200">
                             {{ ticket.updatedOnReadable }}
                         </div>
                     </div>

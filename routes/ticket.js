@@ -318,7 +318,7 @@ Router.post("/update/assign", Authenticate, async (req, res) => {
             }
         );
 
-        // await mailer.ticketAssigned(req.body.assignedTo, ticketToChange);
+        await mailer.ticketAssigned(req.body.assignedTo, ticketToChange);
 
         await Ticket.findOneAndUpdate(
             { id: req.body.id },
