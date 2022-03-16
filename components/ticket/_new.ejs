@@ -1,11 +1,11 @@
 <form action="/ticket/new" method="post">
     
-    <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+    <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3 ">
         
-        <div class="text-gray-600 text-left border border-slate-200 rounded-sm bg-slate-50 p-4">
-            <div class="font-medium text-teal-900 mb-0 text-2xl">Utwórz zgłoszenie</div>
+        <div class="text-gray-600 dark:text-slate-300 text-left border border-slate-200 rounded-sm bg-slate-50 dark:bg-slate-800 dark:border-slate-700 p-4">
+            <div class="font-medium text-teal-900 dark:text-white mb-0 text-2xl">Utwórz zgłoszenie</div>
             <p class="text-xs">Wypełnij poniższe pola</p>
-            <p class="text-md text-teal-900 font-semibold my-2">
+            <p class="text-md text-teal-900 dark:text-white font-semibold my-2">
                 Tytuł
             </p>
             <p>
@@ -13,7 +13,7 @@
                 problem albo wniosek. <br />
                 Na przykład: <i>Problem z programem Adobe Reader</i>
             </p>
-            <p class="text-md text-teal-900 font-semibold my-2">
+            <p class="text-md text-teal-900 dark:text-white font-semibold my-2">
                 Opis
             </p>
             <p>
@@ -33,13 +33,13 @@
                 </ul>
                 W opisie można umieścić kod <b>Markdown</b>.
             </p>
-            <p class="text-md text-teal-900 font-semibold my-2">
+            <p class="text-md text-teal-900 dark:text-white font-semibold my-2">
                 Kategoria
             </p>
             <p>
                 Wybierz kategorię którą uważasz za najbardziej pasującą
             </p>
-            <p class="text-md text-teal-900 font-semibold my-2">
+            <p class="text-md text-teal-900 dark:text-white font-semibold my-2">
                 Priorytet
             </p>
             <p>
@@ -53,12 +53,12 @@
             <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
                 <!-- Title -->
                 <div class="md:col-span-5">
-                    <p class="text-xs text-teal-900 font-bold mb-1">Tytuł <b class="text-red-700">*</b></p>
+                    <p class="text-xs text-teal-900 dark:text-white font-bold mb-1">Tytuł <b class="text-red-700">*</b></p>
                     <input
                         type="text"
                         name="title"
                         id="title"
-                        class="h-10 border mt-1 rounded px-4 text-sm w-full bg-gray-50"
+                        class="h-10 border mt-1 rounded px-4 text-sm w-full bg-gray-50 dark:bg-slate-800 dark:border-slate-700"
                         placeholder="Tytuł"
                         required
                     />
@@ -66,21 +66,21 @@
 
                 <!-- Description-->
                 <div class="md:col-span-5">
-                    <p class="text-xs text-teal-900 font-bold mb-1">Opis <b class="text-red-700">*</b></p>
+                    <p class="text-xs text-teal-900 dark:text-white font-bold mb-1">Opis <b class="text-red-700">*</b></p>
                     <textarea
                         type="text"
                         name="description_md"
                         id="description_md"
-                        class="text-sm font-mono border mt-1 p-4 rounded w-full bg-gray-50 resize-none h-72"
+                        class="text-sm font-mono border mt-1 p-4 rounded w-full bg-gray-50 dark:bg-slate-800 dark:border-slate-700 resize-none h-72"
                         placeholder="Opis"
                         required
                     ></textarea>
                 </div>
 
                 <div class="md:col-span-2">
-                    <p class="text-xs text-teal-900 font-bold mb-1">Kategoria</p>
+                    <p class="text-xs text-teal-900 dark:text-white font-bold mb-1">Kategoria</p>
                     <select
-                        class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" name="category" id="category"
+                        class="h-10 border mt-1 rounded px-4 w-full bg-gray-50 dark:bg-slate-800 dark:border-slate-700" name="category" id="category"
                     >
                         <% for( const [key, value] of Object.entries(definition.category) ) { %>
                         <option value="<%= key %>"><%= value %></option>
@@ -89,9 +89,9 @@
                 </div>
 
                 <div class="md:col-span-1">
-                    <p class="text-xs text-teal-900 font-bold mb-1">Priorytet</p>
+                    <p class="text-xs text-teal-900 dark:text-white font-bold mb-1">Priorytet</p>
                     <select
-                        class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" name="priority" id="priority"
+                        class="h-10 border mt-1 rounded px-4 w-full bg-gray-50 dark:bg-slate-800 dark:border-slate-700" name="priority" id="priority"
                     >
                         <% for( const [key, value] of Object.entries(definition.priority) ) { %>
                         <option value="<%= key %>"><%= value %></option>
@@ -100,12 +100,12 @@
                 </div>
 
                 <div class="md:col-span-2">
-                    <p class="text-xs text-teal-900 font-bold mb-1">Adres e-mail</p>
+                    <p class="text-xs text-teal-900 dark:text-white font-bold mb-1">Adres e-mail</p>
                     <input
                         type="text"
                         name="email"
                         id="email"
-                        class="h-10 border mt-1 rounded px-4 w-full bg-gray-200 text-gray-400"
+                        class="h-10 border mt-1 rounded px-4 w-full bg-gray-200 dark:bg-slate-800 dark:border-slate-700 text-gray-400"
                         placeholder="email@domain.com"
                         value="<%= req.loggedIn.email %>"
                         disabled
@@ -114,7 +114,7 @@
 
                 <div class="md:col-span-5 text-right my-2">
                     <div class="inline-flex items-end">
-                        <button type="submit" value="Wyślij" class="flex items-center justify-between bg-slate-50 border hover:bg-teal-900 hover:border-teal-600 transition-colors hover:text-white px-6 py-2 rounded-md" ><svg
+                        <button type="submit" value="Wyślij" class="flex items-center justify-between bg-slate-50 dark:bg-slate-800 dark:border-slate-700 border hover:bg-teal-900 hover:border-teal-600 transition-colors hover:text-white px-6 py-2 rounded-md" ><svg
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                             class="w-5 h-5 mr-1 fill-current"

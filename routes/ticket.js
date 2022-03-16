@@ -89,21 +89,34 @@ Router.get("/closed", Authenticate, async (req, res) => {
 
 // Wyświetlanie WSZYSTKICH ticketów otwartych w tablicy zgłoszeń
 Router.get("/table", Authenticate, async (req, res) => {
-    await User.find({ access: { $gte: 1 } }, "email access").then(async (users) => {
-        await Ticket.find({ status: ["new", "in-progress"] })
-            .then((tickets) => {
-                res.render("ticket/table", {
-                    title: "Tablica zgłoszeń",
-                    req: req,
-                    tickets: tickets,
-                    definition: definition,
-                    users: users,
+    await User.find({ access: { $gte: 1 } }, "email access").then(
+        async (specialists) => {
+            await Ticket.find({ status: ["new", "in-progress"] })
+                .then((tickets) => {
+                    specialists.push({email: 'none'})
+                    res.render("ticket/table", {
+                        title: "Tablica zgłoszeń",
+                        req: req,
+                        tickets: tickets,
+                        definition: definition,
+                        specialists: specialists,
+                    });
+                })
+                .catch((error) => {
+                    res.status(404).send(error);
                 });
-            })
-            .catch((error) => {
-                res.status(404).send(error);
-            });
-    });
+        }
+    );
+});
+Router.post("/table", Authenticate, async (req, res) => {
+    await Ticket.find({ status: ["new", "in-progress"] })
+        .then((tickets) => {
+            console.log(tickets)
+            res.status(200).send(tickets) 
+        })
+        .catch((error) => {
+            res.status(404).send(error);
+        });
 });
 
 // Formularz do nowego zgłoszenia
@@ -305,7 +318,7 @@ Router.post("/update/assign", Authenticate, async (req, res) => {
             }
         );
 
-        await mailer.ticketAssigned(req.body.assignedTo, ticketToChange);
+        // await mailer.ticketAssigned(req.body.assignedTo, ticketToChange);
 
         await Ticket.findOneAndUpdate(
             { id: req.body.id },
@@ -319,7 +332,6 @@ Router.post("/update/assign", Authenticate, async (req, res) => {
                 },
             }
         );
-
         res.status(200).send("OK");
     } catch (error) {
         res.status(404).send(error);

@@ -1,21 +1,141 @@
 <%- include('../../components/_header.ejs') %>
-<div class="mb-4 font-bold text-teal-900"><%= title %></div>
-<div id="ticket-table">
-    <!-- Board background -->
-    <div class="p-2 border bg-slate-50 overflow-x-auto rounded-sm">
-        <!-- Board inter-->
-        <div class="p-2 border bg-slate-100 flex flex-row h-screen rounded-sm">
-            <!-- Lanes-->
-            <div v-for="(user, index) in users" :key="user.email" class="p-1 border rounded-sm flex-shrink-0 bg-slate-200 w-72 mr-2">
-                <!-- Top header-->
-                <div class="bg-white p-2 text-xs border-slate-300 border rounded-sm flex flex-row justify-between mb-2">
-                    <div class="">{{ user.email }}</div>
-                    <div class="font-normal">12</div>
+<div class="mb-4 font-bold text-teal-900 dark:text-white"><%= title %></div>
+<div id="ticket-table" class="select-none">
+    <!-- Board backplane-->
+    <div class="bg-white dark:bg-slate-900 flex flex-row h-screen rounded-sm">
+        <!-- Queue -->
+        <div class="rounded-sm flex-shrink-0 w-72 mr-2 flex flex-col">
+            <!-- Top header-->
+            <div
+                class="bg-white dark:bg-slate-800 dark:text-white p-2 text-xs font-bold text-teal-900 border-slate-300 border-b flex flex-row justify-between mb-1"
+            >
+                <div class="">Brak przypisania</div>
+                <div class="font-normal">
+                    {{ tickets["none"].length }}
                 </div>
-                <!-- Content -->
-                <div class="bg-white p-2 text-xs border-l-4 border-teal-300 border rounded-sm flex flex-row justify-between h-16 mb-1 hover:border-blue-400 hover:border hover:shadow-md hover:border-l-4 cursor-pointer">
-                    <div class="">{{ user.email }}</div>
-                    <div class="font-normal">12</div>
+            </div>
+            <!-- Landing strip -->
+            <div
+                class="rounded-sm h-max flex-1 p-1"
+            >
+                <!-- Tickets blocks -->
+                <div
+                    v-for="(ticket, index) in tickets['none']"
+                    :key="ticket.id"
+                    :id="ticket.id"
+                    class="bg-white dark:bg-slate-800 p-2 text-xs flex flex-col justify-between border border-slate-300 rounded-sm h-16 mb-1 hover:border-blue-400 hover:border hover:shadow-md transition-colors cursor-pointer"
+                    :class="{
+                        'border-l-4 border-r-4 border border-red-800 dark:border-red-500': ticket.priority == 'critical',
+                        'border border-red-500 dark:border-red-800': ticket.priority == 'high',
+                        'border border-amber-500 dark:border-amber-600': ticket.priority == 'medium',
+                        'border border-teal-400 dark:border-teal-800': ticket.priority == 'low',
+                        'border border-slate-300 dark:border-slate-700': ticket.priority == 'none',
+                    }"
+                    draggable="true"
+                    @dragstart="dragStartEvent($event, ticket.id, ticket.assignedTo)"
+                >
+                    <div class="flex items-start justify-between">
+                        <a
+                            :href="`/ticket/id?id=${ticket.id}`"
+                            class="text-xs hover:underline mr-1"
+                        >
+                            <span
+                                class="border px-1 rounded-md"
+                                :class="{
+                                'border-l-8 border-teal-200': ticket.status == 'new',  
+                                'border-l-8 border-amber-400 bg-amber-100 dark:text-black': ticket.status == 'in-progress',  
+                                'border-l-8 border-slate-400 bg-slate-100 text-slate-400': ticket.status == 'done',
+                            }"
+                                >{{ ticket.id }}</span
+                            >
+                        </a>
+                        <a
+                            :href="`/ticket/id?id=${ticket.id}`"
+                            class="text-xs font-semibold hover:underline flex-1"
+                            >{{ ticket.title_ex }}</a
+                        >
+                    </div>
+                    <div class="flex items-start justify-between">
+                        <div class="">
+                            {{ definition.category[ticket.category] }}
+                        </div>
+                        <div class="font-light text-teal-900 dark:text-teal-200">
+                            {{ ticket.updatedOnReadable }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Lanes -->
+        <div
+            v-for="(specialist, index) in specialists.filter(specialist => specialist.email != 'none')"
+            :key="specialist.email"
+            class="rounded-sm flex-shrink-0 w-72 mr-2 flex flex-col"
+        >
+            <!-- Top header-->
+            <div
+                class="bg-white dark:bg-slate-800 dark:text-white p-2 text-xs font-bold text-teal-900 border-slate-300 border-b flex flex-row justify-between mb-1"
+            >
+                <div class="">{{ specialist.email }}</div>
+                <div class="font-normal">
+                    {{ tickets[specialist.email].length }}
+                </div>
+            </div>
+            <!-- Content -->
+            <!-- Landing strip -->
+            <div
+                class="border bg-slate-50 dark:bg-slate-800 dark:border-slate-700 rounded-sm h-max flex-1 p-1"
+                :id="`landing-site-${specialist.email}`"
+                @drop="dropEvent($event, specialist.email)"
+                @dragover.prevent
+                @dragenter.prevent
+            >
+                <!-- Tickets blocks -->
+                <div
+                    v-for="(ticket, index) in tickets[specialist.email]"
+                    :key="ticket.id"
+                    :id="ticket.id"
+                    class="bg-white dark:bg-slate-800 p-2 text-xs flex flex-col justify-between  rounded-sm h-16 mb-1 hover:border-blue-400 hover:shadow-md transition-colors cursor-pointer"
+                    :class="{
+                        'border-l-4 border-r-4 border border-red-800 dark:border-red-500': ticket.priority == 'critical',
+                        'border border-red-500 dark:border-red-800': ticket.priority == 'high',
+                        'border border-amber-500 dark:border-amber-600': ticket.priority == 'medium',
+                        'border border-teal-400 dark:border-teal-800': ticket.priority == 'low',
+                        'border border-slate-300 dark:border-slate-700': ticket.priority == 'none',
+                    }"
+                    draggable="true"
+                    @dragstart="dragStartEvent($event, ticket.id, ticket.assignedTo)"
+                >
+                    <div class="flex items-start justify-between">
+                        <a
+                            :href="`/ticket/id?id=${ticket.id}`"
+                            class="text-xs hover:underline mr-1"
+                        >
+                            <span
+                                class="border px-1 rounded-md"
+                                :class="{
+                                'border-l-8 border-teal-200': ticket.status == 'new',  
+                                'border-l-8 border-amber-400 bg-amber-100 dark:text-black': ticket.status == 'in-progress',  
+                                'border-l-8 border-slate-400 bg-slate-100 text-slate-400': ticket.status == 'done',
+                            }"
+                                >{{ ticket.id }}</span
+                            >
+                        </a>
+                        <a
+                            :href="`/ticket/id?id=${ticket.id}`"
+                            class="text-xs font-semibold hover:underline flex-1"
+                            >{{ ticket.title_ex }}</a
+                        >
+                    </div>
+                    <div class="flex items-start justify-between">
+                        <div class="">
+                            {{ definition.category[ticket.category] }}
+                        </div>
+                        <div class="font-light text-teal-900">
+                            {{ ticket.updatedOnReadable }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,9 +148,71 @@
         data() {
             return {
                 definition: <%- JSON.stringify(definition) %>,
-                tickets: <%- JSON.stringify(tickets) %>,
-                users: <%- JSON.stringify(users) %>,
+                fetchedTickets: <%- JSON.stringify(tickets) %>,
+                specialists: <%- JSON.stringify(specialists) %>,
                 user: <%- JSON.stringify(req.loggedIn) %>,
+            }
+        },
+        methods: {
+            dragStartEvent (evt, id, currentOwner) {
+                evt.dataTransfer.dropEffect = 'move'
+                evt.dataTransfer.effectAllowed = 'move'
+                evt.dataTransfer.setData('id', id)
+                evt.dataTransfer.setData('currentOwner', currentOwner)
+                console.log({
+                    event: evt,
+                    id: id,
+                    currentOwner: currentOwner,
+                })
+            },
+            async dropEvent (evt, newOwner) {
+                //
+                const id = evt.dataTransfer.getData('id')
+                const currentOwner = evt.dataTransfer.getData('currentOwner')
+                console.log({
+                    id: id,
+                    currentOwner: currentOwner,
+                    newOwner: newOwner,
+                })
+
+                // API CALL
+                if(currentOwner != newOwner && newOwner != 'none') {
+                    await axios.post("/ticket/update/assign", {
+                        id: id,
+                        assignedTo: newOwner
+                    }).then(async (response) => {
+                        await this.update()
+                    }).catch((error) => {
+                        console.log(error)
+                    })
+                } else { console.log("The lane is the same. No change")}
+            },
+            async update() {
+                await axios.post("/ticket/table").then((response) => {
+                    this.fetchedTickets = response.data
+                }).catch((error) => {
+                    console.log(error)
+                })
+            },
+        },
+        computed: {
+            tickets() {
+                this.fetchedTickets.forEach(ticket => {
+                    if(ticket.title.length > 30) {
+                        ticket.title_ex = ticket.title.substring(0, 30) + "..."
+                    } else {
+                        ticket.title_ex = ticket.title
+                    }
+                    let updatedOnReadable = new Date(ticket.updatedOn);
+                    ticket.updatedOnReadable = updatedOnReadable.toLocaleString()
+                    let createdOnReadable = new Date(ticket.createdOn);
+                    ticket.createdOnReadable = createdOnReadable.toLocaleString()
+                });
+                let ticketsBySpecialist = {}
+                this.specialists.forEach(specialist => {
+                    ticketsBySpecialist[specialist.email] = this.fetchedTickets.filter(ticket => ticket.assignedTo == specialist.email)
+                });
+                return ticketsBySpecialist
             }
         },
     })
