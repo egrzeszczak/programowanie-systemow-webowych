@@ -6,12 +6,12 @@
             'border-l-8 border-teal-200': ticket.status == 'new',  
             'border-l-8 border-amber-400 bg-amber-100 dark:bg-amber-900 dark:border-amber-700': ticket.status == 'in-progress',  
             'border-l-8 border-slate-400 bg-slate-100 text-slate-400': ticket.status == 'done',
-            'flex mx-auto w-8/12': user.access == 0,    
+            'lg:flex lg:mx-auto lg:w-8/12': user.access == 0,    
         }"
     >
         <div
             class="flex-1 flex flex-row items-center justify-between"
-            :class="{'col-start-3': user.access == 0}"
+            :class="{'lg:col-start-3': user.access == 0}"
         >
             <div class="flex flex-row items-end">
                 <div class="text-xl font-mono mr-3">{{ ticket.id }}</div>
@@ -37,9 +37,9 @@
     </div>
 
     <div
-        :class="{'grid grid-flow-col grid-cols-12 gap-4': user.access > 0, 'flex flex-col items-center': user.access == 0}"
+        :class="{'lg:grid grid-flow-col grid-cols-12 gap-4': user.access > 0, 'lg:flex flex-col items-center': user.access == 0}"
     >
-        <div class="col-span-4" :class="{'w-8/12 mb-2': user.access == 0}">
+        <div class="col-span-4" :class="{'lg:w-8/12 mb-2': user.access == 0}">
             <!-- DEETS -->
             <p class="text-xs text-teal-600 dark:text-teal-400 font-normal mb-1">Szczegóły</p>
             <div class="border border-slate-100 dark:border-slate-700 shadow-sm rounded-sm p-2">
@@ -270,7 +270,7 @@
             </div>
         </div>
 
-        <div class="col-span-8" :class="{'w-8/12': user.access == 0}">
+        <div class="col-span-8" :class="{'lg:w-8/12': user.access == 0}">
             <p class="text-xs text-teal-600 dark:text-teal-400 font-normal mb-1">Opis</p>
             <div
                 v-html="ticket.description"

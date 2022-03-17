@@ -108,16 +108,7 @@ Router.get("/table", Authenticate, async (req, res) => {
         }
     );
 });
-Router.post("/table", Authenticate, async (req, res) => {
-    await Ticket.find({ status: ["new", "in-progress"] })
-        .then((tickets) => {
-            console.log(tickets)
-            res.status(200).send(tickets) 
-        })
-        .catch((error) => {
-            res.status(404).send(error);
-        });
-});
+
 
 // Formularz do nowego zgłoszenia
 Router.get("/new", Authenticate, (req, res) => {
@@ -129,6 +120,17 @@ Router.post("/info", Authenticate, async (req, res) => {
     let ticket = await Ticket.findOne({ id: req.body.id })
         .then((ticket) => {
             res.status(200).send(ticket);
+        })
+        .catch((error) => {
+            res.status(404).send(error);
+        });
+});
+
+// Do odświeżania informacji Vue.js w tablicy
+Router.post("/table", Authenticate, async (req, res) => {
+    await Ticket.find({ status: ["new", "in-progress"] })
+        .then((tickets) => {
+            res.status(200).send(tickets) 
         })
         .catch((error) => {
             res.status(404).send(error);

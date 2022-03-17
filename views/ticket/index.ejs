@@ -4,7 +4,7 @@
 <div id="ticket-list" class="text-xs">
     <div v-if="fetchedTickets.length > 0">
         <div
-            class="grid grid-flow-col grid-cols-12 gap-1  shadow-sm"
+            class="lg:grid grid-flow-col grid-cols-12 gap-1 shadow-sm"
         >
             <div
                 @click="setSorting('id', false)"
@@ -242,9 +242,10 @@
             <div
                 v-for="(ticket, index) in tickets"
                 :key="index"
-                class="grid grid-flow-col grid-cols-12 gap-1 my-1 hover:bg-teal-50 dark:hover:bg-slate-700 transition-colors cursor-pointer overflow-hidden break-all border-b border-slate-50 dark:border-slate-700"
+                class="lg:grid border border-slate-50 dark:border-slate-500 p-2 grid-flow-col grid-cols-12 gap-1 my-1 hover:bg-teal-50 dark:hover:bg-slate-700 transition-colors cursor-pointer overflow-hidden break-all lg:border-none lg:border-slate-50 lg:dark:border-slate-700 lg:p-0"
                 @click="goTo(ticket.id)"
                 :class="{
+                    '': ticket.status == 'new',
                     'bg-amber-200 dark:bg-yellow-700': ticket.status == 'in-progress',
                     'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500': ticket.status == 'done'
                 }"
@@ -368,7 +369,7 @@
             <div
                 v-for="(ticket, index) in tickets[key]"
                 :key="index"
-                class="grid grid-flow-col grid-cols-12 gap-1 my-1 hover:bg-teal-50 dark:hover:bg-slate-800 transition-colors cursor-pointer overflow-hidden break-all border-b border-slate-50 dark:border-slate-700"
+                class="lg:grid border border-slate-50 dark:border-slate-500 p-2 grid-flow-col grid-cols-12 gap-1 my-1 hover:bg-teal-50 dark:hover:bg-slate-700 transition-colors cursor-pointer overflow-hidden break-all lg:border-none lg:border-slate-50 lg:dark:border-slate-700 lg:p-0"
                 @click="goTo(ticket.id)"
                 :class="{
                     'bg-amber-200 dark:bg-yellow-700': ticket.status == 'in-progress',
