@@ -1,4 +1,4 @@
-<%- include('../../components/_header_off.ejs') %>
+<%- include('../../components/header/_index.ejs') %>
 
 <section class="min-h-screen flex items-stretch text-white">
     <div
@@ -84,7 +84,7 @@
             </h1>
             <p class="text-white">Utwórz konto w <b>ServiceFront</b></p>
             <div class="flex flex-row justify-center my-4">
-                <%- include('../../components/login/_register_form.ejs') %>
+                <%- include('../../components/form/_register.ejs') %>
             </div>
             <% if(error) { %>
             <p class="text-xs text-red-300"><%= error %></p>
@@ -93,4 +93,4 @@
     </div>
 </section>
 
-<%- include('../../components/_footer.ejs') %>
+<%- include('../../components/footer/_index.ejs') %>

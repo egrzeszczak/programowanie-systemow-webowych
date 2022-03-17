@@ -61,7 +61,7 @@ Application.use("/public", Express.static("public"));
 
 // '/' Route
 Application.get("/", Authenticate, (req, res) => {
-    res.render("index", { req: req });
+    res.render("dashboard/index", { req: req });
 });
 // '/about' Route
 Application.get("/about", Authenticate, (req, res) => {
