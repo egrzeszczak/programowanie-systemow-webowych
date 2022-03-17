@@ -139,26 +139,23 @@ Licencja jest dostępna w pliku `LICENSE`
 
 ## Zrzuty ekranu
 
-![](/public/images/2.png)
-Ekran logowania
+Tworzenie nowego zgłoszenia 
+![](/public/showcase/1.png)
 
-![](/public/images/1.png)
-Przykładowe zgłoszenie w ServiceFront
+Wyświetlanie jako zwykły użytkownik 1/2
+![](/public/showcase/2.png)
 
-![](/public/images/3.png)
-Przykład listy zgłoszeń otwartych
+Wyświetlanie jako zwykły użytkownik 2/2
+![](/public/showcase/3.png)
 
-![](/public/images/4.png)
-Widok zgłoszenia dla specjalisty
+Tablica zgłoszeń
+![](/public/showcase/4.png)
 
-![](/public/images/5.png)
-Wysyłanie wiadomości (możliwy **Markdown**)
+Widok zaawansowany
+![](/public/showcase/5.png)
 
-![](/public/images/6.png)
-Wysyłanie wiadomości 
-
-![](/public/images/dark-mode-2.png)
-Dark mode 
+Widok listy zgłoszeń
+![](/public/showcase/6.png)
 
 
 ## Kontakt
