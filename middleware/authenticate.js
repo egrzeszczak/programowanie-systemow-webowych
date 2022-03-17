@@ -1,11 +1,16 @@
+// Authentication middleware
 require("dotenv").config();
 
+// Axios do fetchowania
 const axios = require('axios')
 
+// Moduł weryfikacji
 module.exports = async function Authenticate(req, res, next) {
     if (!req.cookies.Authorization) {
+        // Brak tokenu zalogowania, przekieruj do strony logowania
         res.redirect("/login");
     } else {
+        // Token jest, weryfikuj
         await axios
             .post(`http://${process.env.HOST_IP}:5000/verify`, {
                 Token:
