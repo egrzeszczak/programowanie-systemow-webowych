@@ -11,7 +11,7 @@
     <img src="s2.png" alt="Logo">
   </a> -->
   <a href="https://github.com/egrzeszczak/programowanie-systemow-webowych">
-    <img src="logo-l.png" alt="Logo" width="256">
+    <img src="public/logo/logo-l.png" alt="Logo" width="256">
   </a> 
 
   <h2 align="center">Programowanie Systemów Webowych</h3>
@@ -49,12 +49,12 @@
 
 Projekt jest warunkiem zaliczenia przedmiotu **Programowanie Systemów Webowych** który jest oparty na wybranych przez studenta funkcjonalnościach poniżej:
 
-- struktura HTML5
-- formularz
-- web storage 
-- drag & drop 
-- rest API
-- workery
+* [Struktura HTML5](#struktura-html5)
+* [Formularz](#formularz)
+* [Web storage](#web-storage)
+* [Drag & Drop](#drag--drop)
+* [Rest API](#rest-api)
+* [Workery](#workery)
 
 ### Stack
 
@@ -71,49 +71,67 @@ Projekt jest warunkiem zaliczenia przedmiotu **Programowanie Systemów Webowych*
 
 #### Struktura HTML5
 
-- Strukutra HTML5 dzięki silnikowi wyświetlania `ejs`
-- Framework `TailwindCSS` do stylizacji HTML
+- &check; ~~Strukutra HTML5 dzięki silnikowi wyświetlania `ejs`~~
+- &check; ~~Framework `TailwindCSS` do stylizacji HTML~~
 
 #### Formularz
 
-- Logowanie
-- Rejestracja
-- Tworzenie wniosków
-- Zamieszczanie komentarza, uwag do prac
+- &check; ~~Logowanie~~
+- &check; ~~Rejestracja~~
+- &check; ~~Tworzenie wniosków~~
+- &check; ~~Zamieszczanie komentarza~~, uwag do prac
 - Zamieszczanie załączników
 
 #### Web storage 
 
-- Moduł autentyfikacji (`JWT`): 
-  - logowanie
-  - przechowywanie tokenu sesji
+- &check; ~~Moduł autentyfikacji (`JWT`):~~
+  - ~~przechowywanie tokenu sesji~~
+- Tryb dark mode
+
+![](/public/images/dark-mode-1.png)
 
 #### Drag & Drop 
 
-- Widok tablicy i kolejki zgłoszeń, *drag & drop* można wykorzystać do dispatchowania zgłoszeń pomiędzy specjalistami ds. wsparcia (`Vue.js`)
 - Przekazywanie załączników (`Vue.js`)
+- &check; ~~Widok tablicy i kolejki zgłoszeń, *drag & drop* można wykorzystać do dispatchowania zgłoszeń pomiędzy specjalistami ds. wsparcia (`Vue.js`)~~
+
+![](/public/gifs/table-preview.gif) 
 
 #### Rest API
 
-- Aplikacja wykorzystuje Rest API do komunikacji z bazą danych (`MongoDB`)
-- Wykorzystanie Rest API do weryfikacji tokenów JWT
+- &check; ~~Aplikacja wykorzystuje Rest API do komunikacji z bazą danych (`MongoDB`)~~ 
+- &check; ~~Wykorzystanie Rest API do weryfikacji tokenów JWT~~ 
 
 #### Workery
 
 - Po stronie serwera automatyczne zamykanie nieaktywnych zgłoszeń
-- Komunikaty wysyłane poprzez SMTP
+- &check; ~~Middleware autentykacyjny~~ 
+- &check; ~~Komunikaty wysyłane poprzez SMTP~~ 
 
 ## Uruchomienie
 
 ### Wymagane srodowisko
-
-TBD
-
+1. `git clone github.com/egrzeszczak/programowanie-systemow-webowych`
+2. Konfiguracja `.env`
+```haskell
+ACCESS_TOKEN_SECRET=jwt_token_secret
+HOST_IP=host_ip
+DB_USER=database_user
+DB_PASS=database_password
+DB_ADDR=database_address
+DB_NAME=database_name
+MAIL_HOST=smtp_address
+MAIL_PORT=port
+MAIL_USER=email_user
+MAIL_PASS=email_password
+```
+3. `node` w wersji 16.14.0
+4. `npm` w wersji 8.3.1
+5. Serwer `mongodb` w wersji `>5.*`
 ### Instalacja
 
-1. `git clone github.com/egrzeszczak/programowanie-systemow-webowych`
-2. `npm install`
-3. `npm run dev` albo ~~`npm run build`~~
+- `npm install`
+- `npm run dev`
 
 ## Licencja
 
@@ -121,23 +139,26 @@ Licencja jest dostępna w pliku `LICENSE`
 
 ## Zrzuty ekranu
 
-![](2.png)
+![](/public/images/2.png)
 Ekran logowania
 
-![](1.png)
+![](/public/images/1.png)
 Przykładowe zgłoszenie w ServiceFront
 
-![](3.png)
+![](/public/images/3.png)
 Przykład listy zgłoszeń otwartych
 
-![](4.png)
+![](/public/images/4.png)
 Widok zgłoszenia dla specjalisty
 
-![](5.png)
+![](/public/images/5.png)
 Wysyłanie wiadomości (możliwy **Markdown**)
 
-![](6.png)
-Wysyłanie wiadomości (możliwy **Markdown**)
+![](/public/images/6.png)
+Wysyłanie wiadomości 
+
+![](/public/images/dark-mode-2.png)
+Dark mode 
 
 
 ## Kontakt

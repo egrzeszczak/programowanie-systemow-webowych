@@ -5,7 +5,7 @@
   "main": "application.js",
   "scripts": {
     "tailwind": "",
-    "dev": "concurrently --kill-others \"nodemon application.js\" \"nodemon authentication-server.js\" \"npx tailwindcss -i public/styles/tailwind.css -o public/styles/style.css --watch\""
+    "dev": "concurrently --kill-others \"nodemon app.js\" \"nodemon auth.js\" \"npx tailwindcss -i public/styles/tailwind.css -o public/styles/style.css --watch\""
   },
   "keywords": [],
   "author": "egrzeszczak",
